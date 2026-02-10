@@ -9,30 +9,42 @@ package model;
  * @author Admin
  */
 public class Category {
-    
-    private int categoryID;
-    private String categoryName;
+    private int categoryId;
+    private String name;
+    private boolean isActive;
 
     public Category() {}
 
-    public Category(int categoryID, String categoryName) {
-        this.categoryID = categoryID;
-        this.categoryName = categoryName;
+    public Category(int categoryId, String name, boolean isActive) {
+        this.categoryId = categoryId;
+        this.name = name;
+        this.isActive = isActive;
     }
 
-    public int getCategoryID() {
-        return categoryID;
-    }
+    // getters & setters
 
-    public void setCategoryID(int categoryID) {
-        this.categoryID = categoryID;
-    }
+        public int getCategoryId() {
+            return categoryId;
+        }
 
-    public String getCategoryName() {
-        return categoryName;
-    }
+        public void setCategoryId(int categoryId) {
+            this.categoryId = categoryId;
+        }
 
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
-    }
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public boolean isIsActive() {
+            return isActive;
+        }
+
+        public void setIsActive(boolean isActive) {
+            this.isActive = isActive;
+        }
+
 }

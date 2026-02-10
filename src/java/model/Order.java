@@ -1,57 +1,43 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
-import java.util.Date;
+import constant.OrderStatus;
+import java.time.LocalDateTime;
 
-/**
- *
- * @author Admin
- */
 public class Order {
-    private int orderID;
-    private int customerID;
-    private Date orderDate;
+
+    private int orderId;
+    private int accountId;
     private double totalAmount;
-    private String orderStatus;
-    private String address;
+    private OrderStatus orderStatus;     // ENUM
+    private LocalDateTime createdAt;
 
-    public Order() {}
+    // getters & setters
 
-    public Order(int orderID, int customerID, Date orderDate,
-                 double totalAmount, String orderStatus, String address) {
-        this.orderID = orderID;
-        this.customerID = customerID;
-        this.orderDate = orderDate;
+    public Order() {
+    }
+
+    public Order(int orderId, int accountId, double totalAmount, OrderStatus orderStatus, LocalDateTime createdAt) {
+        this.orderId = orderId;
+        this.accountId = accountId;
         this.totalAmount = totalAmount;
         this.orderStatus = orderStatus;
-        this.address = address;
+        this.createdAt = createdAt;
     }
 
-    public int getOrderID() {
-        return orderID;
+    public int getOrderId() {
+        return orderId;
     }
 
-    public void setOrderID(int orderID) {
-        this.orderID = orderID;
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
     }
 
-    public int getCustomerID() {
-        return customerID;
+    public int getAccountId() {
+        return accountId;
     }
 
-    public void setCustomerID(int customerID) {
-        this.customerID = customerID;
-    }
-
-    public Date getOrderDate() {
-        return orderDate;
-    }
-
-    public void setOrderDate(Date orderDate) {
-        this.orderDate = orderDate;
+    public void setAccountId(int accountId) {
+        this.accountId = accountId;
     }
 
     public double getTotalAmount() {
@@ -62,20 +48,20 @@ public class Order {
         this.totalAmount = totalAmount;
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(String orderStatus) {
+    public void setOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 
-    public String getAddress() {
-        return address;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
     
 }

@@ -1,58 +1,66 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
-/**
- *
- * @author Admin
- */
+import constant.UserRole;
+
 public class Account {
-    private int accountID;
-    private String userName;
-    private String passWord;
-    private String role;
 
-    public Account() {}
+    private int accountId;
+    private String username;
+    private String password;
+    private UserRole role;    // ENUM
+    private String status;    // Active / Inactive (KHÔNG enum)
 
-    public Account(int accountID, String userName, String passWord, String role) {
-        this.accountID = accountID;
-        this.userName = userName;
-        this.passWord = passWord;
+    // getters & setters
+
+    public Account() {
+    }
+
+    public Account(int accountId, String username, String password, UserRole role, String status) {
+        this.accountId = accountId;
+        this.username = username;
+        this.password = password;
         this.role = role;
+        this.status = status;
     }
 
-    public int getAccountID() {
-        return accountID;
+    public int getAccountId() {
+        return accountId;
     }
 
-    public void setAccountID(int accountID) {
-        this.accountID = accountID;
+    public void setAccountId(int accountId) {
+        this.accountId = accountId;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getPassWord() {
-        return passWord;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPassWord(String passWord) {
-        this.passWord = passWord;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public String getRole() {
+    public UserRole getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(UserRole role) {
         this.role = role;
     }
-}
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+    
+}

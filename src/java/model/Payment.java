@@ -1,47 +1,51 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
-import java.util.Date;
+import constant.PaymentStatus;
+import java.time.LocalDateTime;
 
-/**
- *
- * @author Admin
- */
 public class Payment {
-    private int paymentID;
-    private int orderID;
-    private String paymentMethod;
-    private String paymentStatus;
-    private Date paymentDate;
 
-    public Payment() {}
+    private int paymentId;
+    private int orderId;
+    private PaymentStatus paymentStatus;   // ENUM
+    private String paymentMethod;          // String (KHÔNG enum)
+    private LocalDateTime paidAt;
 
-    public Payment(int paymentID, int orderID, String paymentMethod,
-                   String paymentStatus, Date paymentDate) {
-        this.paymentID = paymentID;
-        this.orderID = orderID;
-        this.paymentMethod = paymentMethod;
+    // getters & setters
+
+    public Payment() {
+    }
+
+    public Payment(int paymentId, int orderId, PaymentStatus paymentStatus, String paymentMethod, LocalDateTime paidAt) {
+        this.paymentId = paymentId;
+        this.orderId = orderId;
         this.paymentStatus = paymentStatus;
-        this.paymentDate = paymentDate;
+        this.paymentMethod = paymentMethod;
+        this.paidAt = paidAt;
     }
 
-    public int getPaymentID() {
-        return paymentID;
+    public int getPaymentId() {
+        return paymentId;
     }
 
-    public void setPaymentID(int paymentID) {
-        this.paymentID = paymentID;
+    public void setPaymentId(int paymentId) {
+        this.paymentId = paymentId;
     }
 
-    public int getOrderID() {
-        return orderID;
+    public int getOrderId() {
+        return orderId;
     }
 
-    public void setOrderID(int orderID) {
-        this.orderID = orderID;
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
+    }
+
+    public PaymentStatus getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(PaymentStatus paymentStatus) {
+        this.paymentStatus = paymentStatus;
     }
 
     public String getPaymentMethod() {
@@ -52,20 +56,12 @@ public class Payment {
         this.paymentMethod = paymentMethod;
     }
 
-    public String getPaymentStatus() {
-        return paymentStatus;
+    public LocalDateTime getPaidAt() {
+        return paidAt;
     }
 
-    public void setPaymentStatus(String paymentStatus) {
-        this.paymentStatus = paymentStatus;
-    }
-
-    public Date getPaymentDate() {
-        return paymentDate;
-    }
-
-    public void setPaymentDate(Date paymentDate) {
-        this.paymentDate = paymentDate;
+    public void setPaidAt(LocalDateTime paidAt) {
+        this.paidAt = paidAt;
     }
     
 }

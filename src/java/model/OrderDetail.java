@@ -1,53 +1,46 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
-/**
- *
- * @author Admin
- */
 public class OrderDetail {
-    private int orderDetailID;
-    private int orderID;
-    private int productStatsID;
+    private int orderDetailId;
+    private int orderId;
+    private int productId;
     private int quantity;
     private double price;
 
     public OrderDetail() {}
 
-    public OrderDetail(int orderDetailID, int orderID, int productStatsID,
-                       int quantity, double price) {
-        this.orderDetailID = orderDetailID;
-        this.orderID = orderID;
-        this.productStatsID = productStatsID;
+    // getters & setters
+
+    public OrderDetail(int orderDetailId, int orderId, int productId, int quantity, double price) {
+        this.orderDetailId = orderDetailId;
+        this.orderId = orderId;
+        this.productId = productId;
         this.quantity = quantity;
         this.price = price;
     }
 
-    public int getOrderDetailID() {
-        return orderDetailID;
+    public int getOrderDetailId() {
+        return orderDetailId;
     }
 
-    public void setOrderDetailID(int orderDetailID) {
-        this.orderDetailID = orderDetailID;
+    public void setOrderDetailId(int orderDetailId) {
+        this.orderDetailId = orderDetailId;
     }
 
-    public int getOrderID() {
-        return orderID;
+    public int getOrderId() {
+        return orderId;
     }
 
-    public void setOrderID(int orderID) {
-        this.orderID = orderID;
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
     }
 
-    public int getProductStatsID() {
-        return productStatsID;
+    public int getProductId() {
+        return productId;
     }
 
-    public void setProductStatsID(int productStatsID) {
-        this.productStatsID = productStatsID;
+    public void setProductId(int productId) {
+        this.productId = productId;
     }
 
     public int getQuantity() {
@@ -65,5 +58,5 @@ public class OrderDetail {
     public void setPrice(double price) {
         this.price = price;
     }
-
+    
 }

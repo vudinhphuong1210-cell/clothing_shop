@@ -1,61 +1,67 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
-import java.util.Date;
+import constant.ShippingStatus;
+import java.time.LocalDateTime;
 
-/**
- *
- * @author Admin
- */
 public class Shipping {
-    private int shippingID;
-    private int orderID;
-    private String shippingStatus;
-    private Date shippingDate;
 
-    public Shipping() {}
+    private int shippingId;
+    private int orderId;
+    private ShippingStatus shippingStatus;  // ENUM
+    private LocalDateTime shippedAt;
+    private LocalDateTime deliveredAt;
 
-    public Shipping(int shippingID, int orderID,
-                    String shippingStatus, Date shippingDate) {
-        this.shippingID = shippingID;
-        this.orderID = orderID;
+    // getters & setters
+
+    public Shipping() {
+    }
+
+    public Shipping(int shippingId, int orderId, ShippingStatus shippingStatus, LocalDateTime shippedAt, LocalDateTime deliveredAt) {
+        this.shippingId = shippingId;
+        this.orderId = orderId;
         this.shippingStatus = shippingStatus;
-        this.shippingDate = shippingDate;
+        this.shippedAt = shippedAt;
+        this.deliveredAt = deliveredAt;
     }
 
-    public int getShippingID() {
-        return shippingID;
+    public int getShippingId() {
+        return shippingId;
     }
 
-    public void setShippingID(int shippingID) {
-        this.shippingID = shippingID;
+    public void setShippingId(int shippingId) {
+        this.shippingId = shippingId;
     }
 
-    public int getOrderID() {
-        return orderID;
+    public int getOrderId() {
+        return orderId;
     }
 
-    public void setOrderID(int orderID) {
-        this.orderID = orderID;
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
     }
 
-    public String getShippingStatus() {
+    public ShippingStatus getShippingStatus() {
         return shippingStatus;
     }
 
-    public void setShippingStatus(String shippingStatus) {
+    public void setShippingStatus(ShippingStatus shippingStatus) {
         this.shippingStatus = shippingStatus;
     }
 
-    public Date getShippingDate() {
-        return shippingDate;
+    public LocalDateTime getShippedAt() {
+        return shippedAt;
     }
 
-    public void setShippingDate(Date shippingDate) {
-        this.shippingDate = shippingDate;
+    public void setShippedAt(LocalDateTime shippedAt) {
+        this.shippedAt = shippedAt;
     }
 
+    public LocalDateTime getDeliveredAt() {
+        return deliveredAt;
+    }
+
+    public void setDeliveredAt(LocalDateTime deliveredAt) {
+        this.deliveredAt = deliveredAt;
+    }
+    
 }

@@ -1,60 +1,42 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
-/**
- *
- * @author Admin
- */
 public class Product {
-
-    private int productID;
-    private int categoryID;
-    private String productName;
+    private int productId;
+    private String name;
     private double price;
-    private String image;
-    private String status;
-    private String description;
+    private int stockQuantity;
     private int totalSold;
+    private boolean isActive;
+    private int categoryId;
 
-    public Product() {
-    }
+    public Product() {}
 
-    public Product(int productID, int categoryID, String productName, double price,
-            String image, String status, String description) {
-        this.productID = productID;
-        this.categoryID = categoryID;
-        this.productName = productName;
+    // getters & setters
+
+    public Product(int productId, String name, double price, int stockQuantity, int totalSold, boolean isActive, int categoryId) {
+        this.productId = productId;
+        this.name = name;
         this.price = price;
-        this.image = image;
-        this.status = status;
-        this.description = description;
+        this.stockQuantity = stockQuantity;
+        this.totalSold = totalSold;
+        this.isActive = isActive;
+        this.categoryId = categoryId;
     }
 
-    public int getProductID() {
-        return productID;
+    public int getProductId() {
+        return productId;
     }
 
-    public void setProductID(int productID) {
-        this.productID = productID;
+    public void setProductId(int productId) {
+        this.productId = productId;
     }
 
-    public int getCategoryID() {
-        return categoryID;
+    public String getName() {
+        return name;
     }
 
-    public void setCategoryID(int categoryID) {
-        this.categoryID = categoryID;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public double getPrice() {
@@ -65,28 +47,12 @@ public class Product {
         this.price = price;
     }
 
-    public String getImage() {
-        return image;
+    public int getStockQuantity() {
+        return stockQuantity;
     }
 
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public void setStockQuantity(int stockQuantity) {
+        this.stockQuantity = stockQuantity;
     }
 
     public int getTotalSold() {
@@ -97,5 +63,20 @@ public class Product {
         this.totalSold = totalSold;
     }
 
+    public boolean isIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+    }
     
 }
