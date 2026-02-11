@@ -1,42 +1,56 @@
 package model;
 
 import constant.UserRole;
+import java.time.LocalDateTime;
 
 public class Account {
-
-    private int accountId;
-    private String username;
+    private Integer accountId;
+    private String userName;
     private String password;
-    private UserRole role;    // ENUM
-    private String status;    // Active / Inactive (KHÔNG enum)
+    private UserRole role;
+    private String status;
+    private LocalDateTime createdAt;
 
-    // getters & setters
-
+    // Constructor mặc định
     public Account() {
+        this.status = "Active";
+        this.createdAt = LocalDateTime.now();
     }
 
-    public Account(int accountId, String username, String password, UserRole role, String status) {
+    // Constructor đầy đủ
+    public Account(Integer accountId, String userName, String password, UserRole role, String status, LocalDateTime createdAt) {
         this.accountId = accountId;
-        this.username = username;
+        this.userName = userName;
         this.password = password;
         this.role = role;
         this.status = status;
+        this.createdAt = createdAt;
     }
 
-    public int getAccountId() {
+    // Constructor không có ID (để insert)
+    public Account(String userName, String password, UserRole role) {
+        this.userName = userName;
+        this.password = password;
+        this.role = role;
+        this.status = "Active";
+        this.createdAt = LocalDateTime.now();
+    }
+
+    // Getters và Setters
+    public Integer getAccountId() {
         return accountId;
     }
 
-    public void setAccountId(int accountId) {
+    public void setAccountId(Integer accountId) {
         this.accountId = accountId;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getPassword() {
@@ -62,5 +76,14 @@ public class Account {
     public void setStatus(String status) {
         this.status = status;
     }
-    
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+
 }

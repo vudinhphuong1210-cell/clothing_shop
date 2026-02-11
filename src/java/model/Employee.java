@@ -1,44 +1,67 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
-/**
- *
- * @author Admin
- */
+import java.time.LocalDateTime;
+
 public class Employee {
-    private int employeeID;
-    private String fullNameEmployee;
+    private Integer employeeId;
+    private Integer accountId;
+    private String employeeName;
     private String phone;
     private String position;
-    private int accountID;
+    private String status;
+    private LocalDateTime createdAt;
 
-    public Employee() {}
+    // Constructor mặc định
+    public Employee() {
+        this.status = "Active";
+        this.createdAt = LocalDateTime.now();
+    }
 
-    public Employee(int employeeID, String fullNameEmployee, String phone, String position, int accountID) {
-        this.employeeID = employeeID;
-        this.fullNameEmployee = fullNameEmployee;
+    // Constructor đầy đủ
+    public Employee(Integer employeeId, Integer accountId, String employeeName, 
+                   String phone, String position, String status, LocalDateTime createdAt) {
+        this.employeeId = employeeId;
+        this.accountId = accountId;
+        this.employeeName = employeeName;
         this.phone = phone;
         this.position = position;
-        this.accountID = accountID;
+        this.status = status;
+        this.createdAt = createdAt;
     }
 
-    public int getEmployeeID() {
-        return employeeID;
+    // Constructor không có ID (để insert)
+    public Employee(Integer accountId, String employeeName, String phone, String position) {
+        this.accountId = accountId;
+        this.employeeName = employeeName;
+        this.phone = phone;
+        this.position = position;
+        this.status = "Active";
+        this.createdAt = LocalDateTime.now();
     }
 
-    public void setEmployeeID(int employeeID) {
-        this.employeeID = employeeID;
+    // Getters và Setters
+    public Integer getEmployeeId() {
+        return employeeId;
     }
 
-    public String getFullNameEmployee() {
-        return fullNameEmployee;
+    public void setEmployeeId(Integer employeeId) {
+        this.employeeId = employeeId;
     }
 
-    public void setFullNameEmployee(String fullNameEmployee) {
-        this.fullNameEmployee = fullNameEmployee;
+    public Integer getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(Integer accountId) {
+        this.accountId = accountId;
+    }
+
+    public String getEmployeeName() {
+        return employeeName;
+    }
+
+    public void setEmployeeName(String employeeName) {
+        this.employeeName = employeeName;
     }
 
     public String getPhone() {
@@ -57,11 +80,21 @@ public class Employee {
         this.position = position;
     }
 
-    public int getAccountID() {
-        return accountID;
+    public String getStatus() {
+        return status;
     }
 
-    public void setAccountID(int accountID) {
-        this.accountID = accountID;
+    public void setStatus(String status) {
+        this.status = status;
     }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+
 }

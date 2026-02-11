@@ -1,82 +1,135 @@
 package model;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 public class Product {
-    private int productId;
-    private String name;
-    private double price;
-    private int stockQuantity;
-    private int totalSold;
-    private boolean isActive;
-    private int categoryId;
+    private Integer productId;
+    private Integer categoryId;
+    private String productName;
+    private BigDecimal price;
+    private String image;
+    private String status;
+    private String description;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
-    public Product() {}
-
-    // getters & setters
-
-    public Product(int productId, String name, double price, int stockQuantity, int totalSold, boolean isActive, int categoryId) {
-        this.productId = productId;
-        this.name = name;
-        this.price = price;
-        this.stockQuantity = stockQuantity;
-        this.totalSold = totalSold;
-        this.isActive = isActive;
-        this.categoryId = categoryId;
+    // Constructor mặc định
+    public Product() {
+        this.status = "Active";
+        this.createdAt = LocalDateTime.now();
     }
 
-    public int getProductId() {
+    // Constructor đầy đủ
+    public Product(Integer productId, Integer categoryId, String productName, BigDecimal price,
+                  String image, String status, String description, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.productId = productId;
+        this.categoryId = categoryId;
+        this.productName = productName;
+        this.price = price;
+        this.image = image;
+        this.status = status;
+        this.description = description;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    // Constructor không có ID (để insert)
+    public Product(Integer categoryId, String productName, BigDecimal price, String image, String description) {
+        this.categoryId = categoryId;
+        this.productName = productName;
+        this.price = price;
+        this.image = image;
+        this.description = description;
+        this.status = "Active";
+        this.createdAt = LocalDateTime.now();
+    }
+
+    // Getters và Setters
+    public Integer getProductId() {
         return productId;
     }
 
-    public void setProductId(int productId) {
+    public void setProductId(Integer productId) {
         this.productId = productId;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public int getStockQuantity() {
-        return stockQuantity;
-    }
-
-    public void setStockQuantity(int stockQuantity) {
-        this.stockQuantity = stockQuantity;
-    }
-
-    public int getTotalSold() {
-        return totalSold;
-    }
-
-    public void setTotalSold(int totalSold) {
-        this.totalSold = totalSold;
-    }
-
-    public boolean isIsActive() {
-        return isActive;
-    }
-
-    public void setIsActive(boolean isActive) {
-        this.isActive = isActive;
-    }
-
-    public int getCategoryId() {
+    public Integer getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(int categoryId) {
+    public void setCategoryId(Integer categoryId) {
         this.categoryId = categoryId;
     }
-    
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "productId=" + productId +
+                ", categoryId=" + categoryId +
+                ", productName='" + productName + '\'' +
+                ", price=" + price +
+                ", image='" + image + '\'' +
+                ", status='" + status + '\'' +
+                ", description='" + description + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
+    }
 }

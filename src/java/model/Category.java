@@ -1,50 +1,51 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
-/**
- *
- * @author Admin
- */
 public class Category {
-    private int categoryId;
-    private String name;
-    private boolean isActive;
+    private Integer categoryId;
+    private String categoryName;
+    private String description;
 
-    public Category() {}
-
-    public Category(int categoryId, String name, boolean isActive) {
-        this.categoryId = categoryId;
-        this.name = name;
-        this.isActive = isActive;
+    // Constructor mặc định
+    public Category() {
     }
 
-    // getters & setters
+    // Constructor đầy đủ
+    public Category(Integer categoryId, String categoryName, String description) {
+        this.categoryId = categoryId;
+        this.categoryName = categoryName;
+        this.description = description;
+    }
 
-        public int getCategoryId() {
-            return categoryId;
-        }
+    // Constructor không có ID (để insert)
+    public Category(String categoryName, String description) {
+        this.categoryName = categoryName;
+        this.description = description;
+    }
 
-        public void setCategoryId(int categoryId) {
-            this.categoryId = categoryId;
-        }
+    // Getters và Setters
+    public Integer getCategoryId() {
+        return categoryId;
+    }
 
-        public String getName() {
-            return name;
-        }
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
+    }
 
-        public void setName(String name) {
-            this.name = name;
-        }
+    public String getCategoryName() {
+        return categoryName;
+    }
 
-        public boolean isIsActive() {
-            return isActive;
-        }
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
 
-        public void setIsActive(boolean isActive) {
-            this.isActive = isActive;
-        }
+    public String getDescription() {
+        return description;
+    }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    
 }

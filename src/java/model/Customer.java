@@ -1,37 +1,66 @@
 package model;
 
 import constant.Gender;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Customer {
-
-    private int customerId;
+    private Integer customerId;
+    private Integer accountId;
     private String fullName;
-    private Gender gender;          // ENUM
-    private LocalDate dateOfBirth;
     private String phone;
+    private String email;
+    private Gender gender;
     private String address;
+    private Integer point;
+    private LocalDateTime createdAt;
 
-    // getters & setters
-
+    // Constructor mặc định
     public Customer() {
+        this.point = 0;
+        this.createdAt = LocalDateTime.now();
     }
 
-    public Customer(int customerId, String fullName, Gender gender, LocalDate dateOfBirth, String phone, String address) {
+    // Constructor đầy đủ
+    public Customer(Integer customerId, Integer accountId, String fullName, String phone, 
+                   String email, Gender gender, String address, Integer point, LocalDateTime createdAt) {
         this.customerId = customerId;
+        this.accountId = accountId;
         this.fullName = fullName;
-        this.gender = gender;
-        this.dateOfBirth = dateOfBirth;
         this.phone = phone;
+        this.email = email;
+        this.gender = gender;
         this.address = address;
+        this.point = point;
+        this.createdAt = createdAt;
     }
 
-    public int getCustomerId() {
+    // Constructor không có ID (để insert)
+    public Customer(Integer accountId, String fullName, String phone, String email, Gender gender, String address) {
+        this.accountId = accountId;
+        this.fullName = fullName;
+        this.phone = phone;
+        this.email = email;
+        this.gender = gender;
+        this.address = address;
+        this.point = 0;
+        this.createdAt = LocalDateTime.now();
+    }
+
+    // Getters và Setters
+    public Integer getCustomerId() {
         return customerId;
     }
 
-    public void setCustomerId(int customerId) {
+    public void setCustomerId(Integer customerId) {
         this.customerId = customerId;
+    }
+
+    public Integer getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(Integer accountId) {
+        this.accountId = accountId;
     }
 
     public String getFullName() {
@@ -42,28 +71,28 @@ public class Customer {
         this.fullName = fullName;
     }
 
-    public Gender getGender() {
-        return gender;
-    }
-
-    public void setGender(Gender gender) {
-        this.gender = gender;
-    }
-
-    public LocalDate getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(LocalDate dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
     public String getPhone() {
         return phone;
     }
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
     }
 
     public String getAddress() {
@@ -73,5 +102,21 @@ public class Customer {
     public void setAddress(String address) {
         this.address = address;
     }
-    
+
+    public Integer getPoint() {
+        return point;
+    }
+
+    public void setPoint(Integer point) {
+        this.point = point;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
 }

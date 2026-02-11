@@ -1,50 +1,75 @@
 package model;
 
 import constant.OrderStatus;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class Order {
+    private Integer orderId;
+    private Integer customerId;
+    private LocalDateTime orderDate;
+    private BigDecimal totalAmount;
+    private OrderStatus orderStatus;
+    private String address;
+    private LocalDateTime updatedAt;
 
-    private int orderId;
-    private int accountId;
-    private double totalAmount;
-    private OrderStatus orderStatus;     // ENUM
-    private LocalDateTime createdAt;
-
-    // getters & setters
-
+    // Constructor mặc định
     public Order() {
+        this.orderDate = LocalDateTime.now();
+        this.orderStatus = OrderStatus.PENDING;
     }
 
-    public Order(int orderId, int accountId, double totalAmount, OrderStatus orderStatus, LocalDateTime createdAt) {
+    // Constructor đầy đủ
+    public Order(Integer orderId, Integer customerId, LocalDateTime orderDate, BigDecimal totalAmount,
+                OrderStatus orderStatus, String address, LocalDateTime updatedAt) {
         this.orderId = orderId;
-        this.accountId = accountId;
+        this.customerId = customerId;
+        this.orderDate = orderDate;
         this.totalAmount = totalAmount;
         this.orderStatus = orderStatus;
-        this.createdAt = createdAt;
+        this.address = address;
+        this.updatedAt = updatedAt;
     }
 
-    public int getOrderId() {
+    // Constructor không có ID (để insert)
+    public Order(Integer customerId, BigDecimal totalAmount, String address) {
+        this.customerId = customerId;
+        this.totalAmount = totalAmount;
+        this.address = address;
+        this.orderDate = LocalDateTime.now();
+        this.orderStatus = OrderStatus.PENDING;
+    }
+
+    // Getters và Setters
+    public Integer getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(int orderId) {
+    public void setOrderId(Integer orderId) {
         this.orderId = orderId;
     }
 
-    public int getAccountId() {
-        return accountId;
+    public Integer getCustomerId() {
+        return customerId;
     }
 
-    public void setAccountId(int accountId) {
-        this.accountId = accountId;
+    public void setCustomerId(Integer customerId) {
+        this.customerId = customerId;
     }
 
-    public double getTotalAmount() {
+    public LocalDateTime getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(LocalDateTime orderDate) {
+        this.orderDate = orderDate;
+    }
+
+    public BigDecimal getTotalAmount() {
         return totalAmount;
     }
 
-    public void setTotalAmount(double totalAmount) {
+    public void setTotalAmount(BigDecimal totalAmount) {
         this.totalAmount = totalAmount;
     }
 
@@ -56,12 +81,32 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public String getAddress() {
+        return address;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public void setAddress(String address) {
+        this.address = address;
     }
-    
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "orderId=" + orderId +
+                ", customerId=" + customerId +
+                ", orderDate=" + orderDate +
+                ", totalAmount=" + totalAmount +
+                ", orderStatus=" + orderStatus +
+                ", address='" + address + '\'' +
+                ", updatedAt=" + updatedAt +
+                '}';
+    }
 }

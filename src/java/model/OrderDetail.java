@@ -1,62 +1,94 @@
 package model;
 
+import java.math.BigDecimal;
+
 public class OrderDetail {
-    private int orderDetailId;
-    private int orderId;
-    private int productId;
-    private int quantity;
-    private double price;
+    private Integer orderDetailId;
+    private Integer orderId;
+    private Integer productStatsId;
+    private Integer quantity;
+    private BigDecimal price;
 
-    public OrderDetail() {}
+    // Constructor mặc định
+    public OrderDetail() {
+    }
 
-    // getters & setters
-
-    public OrderDetail(int orderDetailId, int orderId, int productId, int quantity, double price) {
+    // Constructor đầy đủ
+    public OrderDetail(Integer orderDetailId, Integer orderId, Integer productStatsId, 
+                      Integer quantity, BigDecimal price) {
         this.orderDetailId = orderDetailId;
         this.orderId = orderId;
-        this.productId = productId;
+        this.productStatsId = productStatsId;
         this.quantity = quantity;
         this.price = price;
     }
 
-    public int getOrderDetailId() {
+    // Constructor không có ID (để insert)
+    public OrderDetail(Integer orderId, Integer productStatsId, Integer quantity, BigDecimal price) {
+        this.orderId = orderId;
+        this.productStatsId = productStatsId;
+        this.quantity = quantity;
+        this.price = price;
+    }
+
+    // Getters và Setters
+    public Integer getOrderDetailId() {
         return orderDetailId;
     }
 
-    public void setOrderDetailId(int orderDetailId) {
+    public void setOrderDetailId(Integer orderDetailId) {
         this.orderDetailId = orderDetailId;
     }
 
-    public int getOrderId() {
+    public Integer getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(int orderId) {
+    public void setOrderId(Integer orderId) {
         this.orderId = orderId;
     }
 
-    public int getProductId() {
-        return productId;
+    public Integer getProductStatsId() {
+        return productStatsId;
     }
 
-    public void setProductId(int productId) {
-        this.productId = productId;
+    public void setProductStatsId(Integer productStatsId) {
+        this.productStatsId = productStatsId;
     }
 
-    public int getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
 
-    public double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
-    
+
+    // Method tính subtotal
+    public BigDecimal getSubTotal() {
+        if (price != null && quantity != null) {
+            return price.multiply(BigDecimal.valueOf(quantity));
+        }
+        return BigDecimal.ZERO;
+    }
+
+    @Override
+    public String toString() {
+        return "OrderDetail{" +
+                "orderDetailId=" + orderDetailId +
+                ", orderId=" + orderId +
+                ", productStatsId=" + productStatsId +
+                ", quantity=" + quantity +
+                ", price=" + price +
+                ", subTotal=" + getSubTotal() +
+                '}';
+    }
 }
