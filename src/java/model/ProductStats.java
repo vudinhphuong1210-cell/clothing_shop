@@ -97,16 +97,5 @@ public class ProductStats {
         this.updatedAt = updatedAt;
     }
 
-    @Override
-    public String toString() {
-        return "ProductStats{" +
-                "productStatsId=" + productStatsId +
-                ", productId=" + productId +
-                ", size='" + size + '\'' +
-                ", color='" + color + '\'' +
-                ", totalInStock=" + totalInStock +
-                ", totalSold=" + totalSold +
-                ", updatedAt=" + updatedAt +
-                '}';
-    }
+   
 }

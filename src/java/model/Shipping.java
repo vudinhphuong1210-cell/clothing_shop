@@ -82,15 +82,5 @@ public class Shipping {
         this.updatedAt = updatedAt;
     }
 
-    @Override
-    public String toString() {
-        return "Shipping{" +
-                "shippingId=" + shippingId +
-                ", orderId=" + orderId +
-                ", shippingStatus=" + shippingStatus +
-                ", shippingDate=" + shippingDate +
-                ", deliveryDate=" + deliveryDate +
-                ", updatedAt=" + updatedAt +
-                '}';
-    }
+   
 }

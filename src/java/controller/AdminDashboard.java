@@ -5,6 +5,7 @@
 
 package controller;
 
+import constant.OrderStatus;
 import dal.clothingShopDal;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,6 +14,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,11 +33,44 @@ public class AdminDashboard extends HttpServlet {
        try {
            
     clothingShopDal cs = new clothingShopDal();
-    int total = cs.getTotalOrders();
     List<Order> eachOrder=cs.getAllOrders();
-    request.setAttribute("totalOrders", total);   
+    List<Order> eachOrderDelivered= new ArrayList<>();
+    List<Order> eachOrderPending= new ArrayList<>();
+    List<Order> eachOrderCancelled= new ArrayList<>();
+    List<Order> eachOrderShipped= new ArrayList<>();
+    List<Order> eachOrderConfirmed= new ArrayList<>();
+    request.setAttribute("totalOrders", eachOrder.size());   
     request.setAttribute("eachOrder", eachOrder);
-    request.getRequestDispatcher("AdminDashboard.jsp")
+    
+    for (Order o : eachOrder) {
+    switch (o.getOrderStatus()) {
+        case DELIVERED -> eachOrderDelivered.add(o);
+        case SHIPPED -> eachOrderShipped.add(o);
+        case CANCELLED -> eachOrderCancelled.add(o);
+        case CONFIRMED -> eachOrderConfirmed.add(o);
+        case PENDING -> eachOrderPending.add(o);
+    }
+}
+    // DELIVERED
+request.setAttribute("totalOrdersDelivered", eachOrderDelivered.size());
+request.setAttribute("eachOrderDelivered", eachOrderDelivered);
+
+// SHIPPED
+request.setAttribute("totalOrdersShipped", eachOrderShipped.size());
+request.setAttribute("eachOrderShipped", eachOrderShipped);
+
+// CANCELLED
+request.setAttribute("totalOrdersCancelled", eachOrderCancelled.size());
+request.setAttribute("eachOrderCancelled", eachOrderCancelled);
+
+// CONFIRMED
+request.setAttribute("totalOrdersConfirm", eachOrderConfirmed.size());
+request.setAttribute("eachOrderConfirm", eachOrderConfirmed);
+
+// PENDING
+request.setAttribute("totalOrdersPending", eachOrderPending.size());
+request.setAttribute("eachOrderPending", eachOrderPending);
+    request.getRequestDispatcher("Admin/AdminDashboard.jsp")
            .forward(request, response);
 } catch (Exception ex) {
     Logger.getLogger(AdminDashboard.class.getName()).log(Level.SEVERE, null, ex);

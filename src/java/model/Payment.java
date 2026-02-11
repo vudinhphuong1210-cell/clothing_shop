@@ -90,15 +90,5 @@ public class Payment {
         this.updatedAt = updatedAt;
     }
 
-    @Override
-    public String toString() {
-        return "Payment{" +
-                "paymentId=" + paymentId +
-                ", orderId=" + orderId +
-                ", paymentMethod='" + paymentMethod + '\'' +
-                ", paymentStatus=" + paymentStatus +
-                ", paymentDate=" + paymentDate +
-                ", updatedAt=" + updatedAt +
-                '}';
-    }
+   
 }

@@ -13,22 +13,6 @@ import model.Order;
 public class clothingShopDal extends DBContext {
 
     // ===============================
-    // LẤY TỔNG SỐ ĐƠN HÀNG
-    // ===============================
-    public int getTotalOrders() throws SQLException {
-        String sql = "SELECT COUNT(*) FROM [Order]";
-
-        try (PreparedStatement pstm = connection.prepareStatement(sql);
-             ResultSet rs = pstm.executeQuery()) {
-
-            if (rs.next()) {
-                return rs.getInt(1);
-            }
-        }
-        return 0;
-    }
-
-    // ===============================
     // LẤY DANH SÁCH ĐƠN HÀNG
     // ===============================
     public List<Order> getAllOrders() throws SQLException {
@@ -81,4 +65,24 @@ public class clothingShopDal extends DBContext {
         }
         return list;
     }
+    
+    // ===============================
+    // LẤY DANH SÁCH SỐ LƯỢNG BÁN RA CỦA TỪNG LÔ
+    // ===============================
+    
+    public List<Order> getStatusOrders(OrderStatus status) throws SQLException {
+        String sql = "SELECT * FROM [Order] WHERE OrderStatus = ?";
+        List<Order> list = new ArrayList<>();
+        PreparedStatement pstm = connection.prepareStatement(sql);
+        pstm.setString(1, status.name());
+        ResultSet rs = pstm.executeQuery();
+        while(rs.next()){
+            Order o = new Order();
+            String statusStr = rs.getString("OrderStatus");
+                o.setOrderStatus(OrderStatus.valueOf(statusStr.toUpperCase()));
+                list.add(o);
+        }
+        return list;
+    }
+    
 }

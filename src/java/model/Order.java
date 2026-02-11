@@ -97,16 +97,5 @@ public class Order {
         this.updatedAt = updatedAt;
     }
 
-    @Override
-    public String toString() {
-        return "Order{" +
-                "orderId=" + orderId +
-                ", customerId=" + customerId +
-                ", orderDate=" + orderDate +
-                ", totalAmount=" + totalAmount +
-                ", orderStatus=" + orderStatus +
-                ", address='" + address + '\'' +
-                ", updatedAt=" + updatedAt +
-                '}';
-    }
+    
 }

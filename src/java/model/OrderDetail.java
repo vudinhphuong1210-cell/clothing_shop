@@ -80,15 +80,5 @@ public class OrderDetail {
         return BigDecimal.ZERO;
     }
 
-    @Override
-    public String toString() {
-        return "OrderDetail{" +
-                "orderDetailId=" + orderDetailId +
-                ", orderId=" + orderId +
-                ", productStatsId=" + productStatsId +
-                ", quantity=" + quantity +
-                ", price=" + price +
-                ", subTotal=" + getSubTotal() +
-                '}';
-    }
+   
 }
