@@ -40,7 +40,9 @@ public class AccountDAL extends DBContext {
             PreparedStatement stAcc = connection.prepareStatement(sqlAccount, Statement.RETURN_GENERATED_KEYS);
             stAcc.setString(1, account.getUserName());
             stAcc.setString(2, account.getPassword());
-            stAcc.setString(3, account.getRole().name());
+            String roleName = account.getRole().name().toLowerCase();
+            roleName = roleName.substring(0, 1).toUpperCase() + roleName.substring(1);
+            stAcc.setString(3, roleName);
             stAcc.setString(4, account.getStatus());
             stAcc.setTimestamp(5, Timestamp.valueOf(account.getCreatedAt()));
             
