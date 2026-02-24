@@ -30,7 +30,7 @@ public class AdminFilter implements Filter {
 
         // Chưa login
         if (session == null) {
-            resp.sendRedirect(req.getContextPath() + "/login.jsp");
+            resp.sendRedirect(req.getContextPath() + "/login");
             return;
         }
 
@@ -38,7 +38,7 @@ public class AdminFilter implements Filter {
 
         // Không có account
         if (account == null) {
-            resp.sendRedirect(req.getContextPath() + "/login.jsp");
+            resp.sendRedirect(req.getContextPath() + "/login");
             return;
         }
 
