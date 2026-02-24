@@ -1,5 +1,5 @@
 <%-- 
-    Document   : AdminDashboardConfirmed
+    Document   : AdminOrderConfirmed
     Created on : Feb 11, 2026, 8:02:46 PM
     Author     : Admin
 --%>
@@ -37,6 +37,6 @@
     </tr>
 </c:forEach>
 </table>
-    <a href="AdminDashboard">quay về trang dashboard cho admin</a>
+    <a href="AdminOrder">quay về trang dashboard cho admin</a>
     </body>
 </html>

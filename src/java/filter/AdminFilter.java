@@ -1,6 +1,7 @@
 package filter;
 
 import constant.UserRole;
+import constant.AccountStatus;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -14,7 +15,7 @@ import model.Account;
 
 import java.io.IOException;
 
-@WebFilter(urlPatterns = {"/admin/*"})
+@WebFilter(urlPatterns = {"/admin/*", "/Admin/*"})
 public class AdminFilter implements Filter {
 
     @Override
@@ -27,7 +28,7 @@ public class AdminFilter implements Filter {
 
         HttpSession session = req.getSession(false);
 
-        // 1. Chưa login
+        // Chưa login
         if (session == null) {
             resp.sendRedirect(req.getContextPath() + "/login.jsp");
             return;
@@ -35,21 +36,21 @@ public class AdminFilter implements Filter {
 
         Account account = (Account) session.getAttribute("account");
 
-        // 2. Không có account
+        // Không có account
         if (account == null) {
             resp.sendRedirect(req.getContextPath() + "/login.jsp");
             return;
         }
 
-        // 3. Không phải ADMIN
+        // Không phải ADMIN
         if (account.getRole() != UserRole.ADMIN) {
-            resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Admin only");
+            resp.sendRedirect(req.getContextPath() + "/access-denied.jsp");
             return;
         }
 
-        // 4. Account không active
-        if (!"Active".equalsIgnoreCase(account.getStatus())) {
-            resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Account inactive");
+        // Account bị khóa
+        if (account.getStatus() != AccountStatus.ACTIVE) {
+            resp.sendRedirect(req.getContextPath() + "/account-blocked.jsp");
             return;
         }
 

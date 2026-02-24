@@ -1,7 +1,8 @@
 package model;
 
 import java.time.LocalDateTime;
-
+import java.time.ZoneId;
+import java.util.Date;
 public class ProductStats {
     private Integer productStatsId;
     private Integer productId;
@@ -97,5 +98,14 @@ public class ProductStats {
         this.updatedAt = updatedAt;
     }
 
-   
+   public Date getUpdatedAtAsDate() {
+    if (this.updatedAt == null) {
+        return null;
+    }
+    return Date.from(
+        this.updatedAt
+            .atZone(ZoneId.systemDefault())
+            .toInstant()
+    );
+}
 }

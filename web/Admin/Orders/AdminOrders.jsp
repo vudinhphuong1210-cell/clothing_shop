@@ -1,5 +1,5 @@
 <%-- 
-    Document   : AdminDashboard
+    Document   : AdminOrder
     Created on : Feb 11, 2026, 3:45:22 PM
     Author     : Admin
 --%>
@@ -10,15 +10,19 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Admin Dashboard</title>
+        <title>Admin Order</title>
     </head>
     <body>
-        <h1>📊 Admin Dashboard</h1>
+        <jsp:include page="/Admin/AdminHome.jsp"/>
+        <div class="main-content">
+    
+
+        <h1>📊 Admin Order</h1>
         
-        <form action="AdminDashboard" method="get">
+        <form action="AdminOrder" method="get">
     <label>Status:</label>
     <select name="status">
-        <option value="Admin-dashboard">-- All --</option>
+        <option value="AdminOrder">-- All --</option>
         <option value="Pending">Pending</option>
         <option value="Confirmed">Confirmed</option>
         <option value="Shipped">Shipped</option>
@@ -52,7 +56,7 @@
     </tr>
 </c:forEach>
 </table>
-    
+    </div>
     
     </body>
 </html>
