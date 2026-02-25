@@ -1,5 +1,6 @@
 package dal;
 
+import constant.OrderStatus;
 import constant.UserRole;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -43,7 +44,7 @@ public class AccountDAL extends DBContext {
             String roleName = account.getRole().name().toLowerCase();
             roleName = roleName.substring(0, 1).toUpperCase() + roleName.substring(1);
             stAcc.setString(3, roleName);
-            stAcc.setString(4, account.getStatus());
+            stAcc.setString(4, AccountSt.valueOf(statusStr.toUpperCase()));
             stAcc.setTimestamp(5, Timestamp.valueOf(account.getCreatedAt()));
             
             int affectedRows = stAcc.executeUpdate();
