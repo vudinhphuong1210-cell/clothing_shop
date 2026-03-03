@@ -341,10 +341,12 @@ public class clothingShopDal extends DBContext {
         return 0;
     }
 
-    public void updateAccountStatus(int accountId, AccountStatus status) throws Exception {
+     public void updateAccountStatus(int accountId, AccountStatus status) throws Exception {
         String sql = "UPDATE Account SET Status = ? WHERE AccountId = ?";
+        // Chuyển ACTIVE → "Active", BANNED → "Banned" để khớp với DB
+        String statusStr = status.name().charAt(0) + status.name().substring(1).toLowerCase();
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, status.name());
+            ps.setString(1, statusStr);
             ps.setInt(2, accountId);
             ps.executeUpdate();
         }

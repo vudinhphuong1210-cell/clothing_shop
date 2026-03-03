@@ -13,13 +13,20 @@ public class DBContext {
         try {
             String user = "sa";
             String pass = "sa";
-            String url = "jdbc:sqlserver://localhost:1433;databaseName=ClothingShop";
+            String url = "jdbc:sqlserver://localhost:1433;"
+                    + "databaseName=ClothingShop;"
+                    + "encrypt=true;"
+                    + "trustServerCertificate=true;";
+
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             connection = DriverManager.getConnection(url, user, pass);
-            
 
-        } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(DBContext.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DBContext.class.getName()).log(Level.INFO, "Database connected successfully!");
+
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(DBContext.class.getName()).log(Level.SEVERE, "JDBC Driver not found!", ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(DBContext.class.getName()).log(Level.SEVERE, "Cannot connect to database! Check URL/username/password.", ex);
         }
-}
+    }
 }

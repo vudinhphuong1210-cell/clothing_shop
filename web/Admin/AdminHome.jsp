@@ -67,7 +67,7 @@
         <li><a href="AdminDashboard">📊 Dashboard</a></li>
         <li><a href="AdminOrder">🧾 Orders</a></li>
         <li><a href="AdminProduct">👕 Products</a></li>
-        <li><a href="AdminCustomerControl">👤 Customers</a></li
+        <li><a href="AdminCustomerControl">👤 Customers</a></li>
         <li><a href="AdminEmployeeControl">👨‍ Employees</a></li>
         <li><a href="AdminLogout">🚪 Logout</a></li>
     </ul>
