@@ -4,6 +4,7 @@
  */
 package model;
 
+import constant.OrderStatus;
 import java.time.LocalDateTime;
 
 public class Order {

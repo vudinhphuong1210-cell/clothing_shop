@@ -18,8 +18,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import model.OrderStatus;
-import model.PaymentStatus;
+import constant.OrderStatus;
+import constant.PaymentStatus;
 
 @WebServlet("/vnpayReturn")
 public class VnpayReturn extends HttpServlet {
@@ -76,7 +76,7 @@ public class VnpayReturn extends HttpServlet {
 
         OrderStatus currentStatus = orderDAO.getOrderStatus(orderId);
 
-        if (currentStatus != OrderStatus.Pending) {
+        if (currentStatus != OrderStatus.PENDING) {
             request.setAttribute("transResult", true);
             request.setAttribute("message", "Đơn hàng đã được xử lý trước đó.");
             request.getRequestDispatcher("paymentResult.jsp").forward(request, response);
@@ -87,17 +87,17 @@ public class VnpayReturn extends HttpServlet {
 
         if ("00".equals(responseCode) && "00".equals(transactionStatus)) {
 
-            orderDAO.updateOrderStatus(orderId, OrderStatus.Confirmed);
+            orderDAO.updateOrderStatus(orderId, OrderStatus.CONFIRMED);
 
-            paymentDAO.updatePaymentVNPStatus(orderId, PaymentStatus.Paid, transactionNo);
+            paymentDAO.updatePaymentVNPStatus(orderId, PaymentStatus.PAID, transactionNo);
 
             transSuccess = true;
 
         } else {
 
-            orderDAO.updateOrderStatus(orderId, OrderStatus.Cancelled);
+            orderDAO.updateOrderStatus(orderId, OrderStatus.CANCELLED);
 
-            paymentDAO.updatePaymentVNPStatus(orderId, PaymentStatus.Failed, transactionNo);
+            paymentDAO.updatePaymentVNPStatus(orderId, PaymentStatus.FAILED, transactionNo);
         }
 
         request.setAttribute("transResult", transSuccess);

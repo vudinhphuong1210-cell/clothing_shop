@@ -4,6 +4,7 @@
  */
 package model;
 
+import constant.ShippingStatus;
 import java.time.LocalDateTime;
 
 public class Shipping {

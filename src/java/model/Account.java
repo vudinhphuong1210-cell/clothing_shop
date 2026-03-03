@@ -4,6 +4,7 @@
  */
 package model;
 
+import constant.UserRole;
 import java.time.LocalDateTime;
 
 public class Account {

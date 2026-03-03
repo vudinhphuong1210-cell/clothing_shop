@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import model.Order;
-import model.OrderStatus;
+import constant.OrderStatus;
 
 public class ShippingDAO extends DBContext {
 

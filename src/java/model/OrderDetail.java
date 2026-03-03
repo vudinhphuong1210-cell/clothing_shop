@@ -1,22 +1,22 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
-public class OrderDetail {
+import java.math.BigDecimal;
 
-    private int orderDetailId;
-    private int orderId;
-    private int productStatsId;
-    private int quantity;
-    private double price;
+public class OrderDetail {
+    private Integer orderDetailId;
+    private Integer orderId;
+    private Integer productStatsId;
+    private Integer quantity;
+    private BigDecimal price;
     private String productName;
 
+    // Constructor mặc định
     public OrderDetail() {
     }
 
-    public OrderDetail(int orderDetailId, int orderId, int productStatsId, int quantity, double price, String productName) {
+    // Constructor đầy đủ
+
+    public OrderDetail(Integer orderDetailId, Integer orderId, Integer productStatsId, Integer quantity, BigDecimal price, String productName) {
         this.orderDetailId = orderDetailId;
         this.orderId = orderId;
         this.productStatsId = productStatsId;
@@ -24,47 +24,63 @@ public class OrderDetail {
         this.price = price;
         this.productName = productName;
     }
-
     
 
-    public int getOrderDetailId() {
+    // Constructor không có ID (để insert)
+    public OrderDetail(Integer orderId, Integer productStatsId, Integer quantity, BigDecimal price) {
+        this.orderId = orderId;
+        this.productStatsId = productStatsId;
+        this.quantity = quantity;
+        this.price = price;
+    }
+
+    // Getters và Setters
+    public Integer getOrderDetailId() {
         return orderDetailId;
     }
 
-    public int getOrderId() {
-        return orderId;
-    }
-
-    public int getProductStatsId() {
-        return productStatsId;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setOrderDetailId(int orderDetailId) {
+    public void setOrderDetailId(Integer orderDetailId) {
         this.orderDetailId = orderDetailId;
     }
 
-    public void setOrderId(int orderId) {
+    public Integer getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Integer orderId) {
         this.orderId = orderId;
     }
 
-    public void setProductStatsId(int productStatsId) {
+    public Integer getProductStatsId() {
+        return productStatsId;
+    }
+
+    public void setProductStatsId(Integer productStatsId) {
         this.productStatsId = productStatsId;
     }
 
-    public void setQuantity(int quantity) {
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
 
-    public void setPrice(double price) {
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    // Method tính subtotal
+    public BigDecimal getSubTotal() {
+        if (price != null && quantity != null) {
+            return price.multiply(BigDecimal.valueOf(quantity));
+        }
+        return BigDecimal.ZERO;
     }
 
     public String getProductName() {
@@ -74,5 +90,5 @@ public class OrderDetail {
     public void setProductName(String productName) {
         this.productName = productName;
     }
-
+   
 }

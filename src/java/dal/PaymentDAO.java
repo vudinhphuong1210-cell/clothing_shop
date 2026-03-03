@@ -8,8 +8,8 @@ import model.Payment;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import model.PaymentMethod;
-import model.PaymentStatus;
+import constant.PaymentMethod;
+import constant.PaymentStatus;
 
 public class PaymentDAO extends DBContext {
 

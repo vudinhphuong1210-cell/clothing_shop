@@ -15,8 +15,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.Order;
 import model.Payment;
-import model.PaymentMethod;
-import model.PaymentStatus;
+import constant.PaymentMethod;
+import constant.PaymentStatus;
 
 @WebServlet("/pay")
 public class PaymentServlet extends HttpServlet {
@@ -80,7 +80,7 @@ public class PaymentServlet extends HttpServlet {
         Payment payment = new Payment();
         payment.setOrderId(orderId);
         payment.setPaymentMethod(method);
-        payment.setPaymentStatus(PaymentStatus.Pending);
+        payment.setPaymentStatus(PaymentStatus.PENDING);
 
         PaymentDAO paymentDAO = new PaymentDAO();
         paymentDAO.insert(payment);

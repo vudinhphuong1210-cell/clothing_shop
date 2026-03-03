@@ -4,6 +4,8 @@
  */
 package model;
 
+import constant.PaymentMethod;
+import constant.PaymentStatus;
 import java.time.LocalDateTime;
 
 public class Payment {

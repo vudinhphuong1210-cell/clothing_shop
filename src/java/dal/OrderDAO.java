@@ -9,7 +9,7 @@ import java.util.List;
 import model.Order;
 import java.sql.*;
 import model.OrderDetail;
-import model.OrderStatus;
+import constant.OrderStatus;
 
 public class OrderDAO extends DBContext {
     
@@ -89,7 +89,7 @@ public class OrderDAO extends DBContext {
                 orderDetail.setOrderId(rs.getInt("OrderId"));
                 orderDetail.setProductStatsId(rs.getInt("ProductStatsId"));
                 orderDetail.setQuantity(rs.getInt("Quantity"));
-                orderDetail.setPrice(rs.getDouble("Price"));
+                orderDetail.setPrice(rs.getBigDecimal("Price"));
                 orderDetail.setProductName(rs.getString("ProductName"));
                 
                 list.add(orderDetail);
