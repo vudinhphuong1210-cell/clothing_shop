@@ -1,6 +1,6 @@
 <%-- 
-    Document   : AdminDashboardDelivered
-    Created on : Feb 11, 2026, 7:57:16 PM
+    Document   : AdminOrderShipped
+    Created on : Feb 11, 2026, 8:02:08 PM
     Author     : Admin
 --%>
 
@@ -13,8 +13,8 @@
         <title>JSP Page</title>
     </head>
     <body>
-                <ul>
-    <li>Tổng Đơn hàng đã hoàn thành: ${totalOrdersDelivered}</li>
+         <ul>
+    <li>Tổng Đơn hàng đã hoàn thành: ${totalOrdersShipped}</li>
     </ul>
     <table border="1">
     <tr>
@@ -26,7 +26,7 @@
         <th>Address</th>
     </tr>
 
-    <c:forEach items="${eachOrderDelivered}" var="o">
+    <c:forEach items="${eachOrderShipped}" var="o">
     <tr>
         <td>${o.orderId}</td>
         <td>${o.customerId}</td>
@@ -37,6 +37,6 @@
     </tr>
 </c:forEach>
 </table>
-    <a href="AdminDashboard">quay về trang dashboard cho admin</a>
+    <a href="AdminOrder">quay về trang dashboard cho admin</a>
     </body>
 </html>

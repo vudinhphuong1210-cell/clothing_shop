@@ -33,7 +33,7 @@ public class RegisterServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        request.getRequestDispatcher("view/home/register.jsp").forward(request, response);
+        request.getRequestDispatcher("view/account/register.jsp").forward(request, response);
     } 
 
     @Override
@@ -49,7 +49,7 @@ public class RegisterServlet extends HttpServlet {
         
         if (dal.checkUsernameDuplicate(username)) {
             request.setAttribute("error", "Username already exists!");
-            request.getRequestDispatcher("view/home/register.jsp").forward(request, response);
+            request.getRequestDispatcher("view/account/register.jsp").forward(request, response);
             return;
         }
         
@@ -63,7 +63,7 @@ public class RegisterServlet extends HttpServlet {
             request.getRequestDispatcher("view/home/login.jsp").forward(request, response);
         } else {
             request.setAttribute("error", "Registration failed! Please try again.");
-            request.getRequestDispatcher("view/home/register.jsp").forward(request, response);
+            request.getRequestDispatcher("view/account/register.jsp").forward(request, response);
         }
     }
 

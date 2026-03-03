@@ -12,6 +12,10 @@
         <title>JSP Page</title>
     </head>
     <body>
+        <jsp:include page="componentHome/header.jsp"/>
+        <jsp:include page="editProfile.jsp"/>
         <h1>Hello World!</h1>
+        
+        <jsp:include page="componentHome/footer.jsp"/>
     </body>
 </html>

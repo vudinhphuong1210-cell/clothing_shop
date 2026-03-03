@@ -13,6 +13,16 @@ public class Order {
     private String address;
     private LocalDateTime updatedAt;
 
+    private ProductStats productStats;
+
+    public ProductStats getProductStats() {
+        return productStats;
+    }
+
+    public void setProductStats(ProductStats productStats) {
+        this.productStats = productStats;
+    }
+    
     // Constructor mặc định
     public Order() {
         this.orderDate = LocalDateTime.now();
