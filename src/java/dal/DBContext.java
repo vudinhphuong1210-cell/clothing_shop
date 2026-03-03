@@ -24,8 +24,11 @@ public class DBContext {
             Logger.getLogger(DBContext.class.getName()).log(Level.INFO, "Database connected successfully!");
 
         } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
             Logger.getLogger(DBContext.class.getName()).log(Level.SEVERE, "JDBC Driver not found!", ex);
         } catch (SQLException ex) {
+            System.out.println("SQL ERROR: " + ex.getMessage());
+            ex.printStackTrace();
             Logger.getLogger(DBContext.class.getName()).log(Level.SEVERE, "Cannot connect to database! Check URL/username/password.", ex);
         }
     }

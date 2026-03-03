@@ -1,0 +1,402 @@
+/* =========================================================
+   DATABASE: ClothingShop (FULL VERSION – ONE SCRIPT)
+   DBMS: SQL Server
+   ========================================================= */
+
+USE master;
+GO
+
+IF EXISTS (SELECT name FROM sys.databases WHERE name = 'ClothingShop')
+BEGIN
+    ALTER DATABASE ClothingShop SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+    DROP DATABASE ClothingShop;
+END
+GO
+
+CREATE DATABASE ClothingShop;
+GO
+
+USE ClothingShop;
+GO
+
+/* ===================== 1. ACCOUNT ===================== */
+CREATE TABLE Account (
+    AccountId INT IDENTITY PRIMARY KEY,
+    UserName NVARCHAR(100) NOT NULL UNIQUE,
+    Password NVARCHAR(255) NOT NULL,--Varchar
+    Role NVARCHAR(20) CHECK (Role IN ('Customer','Employee','Admin')) NOT NULL,
+    Status NVARCHAR(20) DEFAULT 'Active',
+    CreatedAt DATETIME2 DEFAULT GETDATE()
+);
+GO
+
+/* ===================== 2. CUSTOMER ===================== */
+CREATE TABLE Customer (
+    CustomerId INT IDENTITY PRIMARY KEY,
+    AccountId INT NOT NULL,
+    FullName NVARCHAR(255) NOT NULL,
+    Phone NVARCHAR(20),
+    Email NVARCHAR(255),
+    Gender NVARCHAR(10),
+    Address NVARCHAR(MAX),
+    Point INT DEFAULT 0,
+    CreatedAt DATETIME2 DEFAULT GETDATE(),
+    CONSTRAINT FK_Customer_Account
+        FOREIGN KEY (AccountId) REFERENCES Account(AccountId) ON DELETE CASCADE
+);
+GO
+
+/* ===================== 3. EMPLOYEE ===================== */
+CREATE TABLE Employee (
+    EmployeeId INT IDENTITY PRIMARY KEY,
+    AccountId INT NOT NULL,
+    EmployeeName NVARCHAR(255) NOT NULL,
+    Phone NVARCHAR(20),
+    Position NVARCHAR(100),
+    Status NVARCHAR(20) DEFAULT 'Active',
+    CreatedAt DATETIME2 DEFAULT GETDATE(),
+    CONSTRAINT FK_Employee_Account
+        FOREIGN KEY (AccountId) REFERENCES Account(AccountId) ON DELETE CASCADE
+);
+GO
+
+/* ===================== 4. CATEGORY ===================== */
+CREATE TABLE Category (
+    CategoryId INT IDENTITY PRIMARY KEY,
+    CategoryName NVARCHAR(255) NOT NULL,
+    Description NVARCHAR(MAX)
+);
+GO
+
+/* ===================== 5. PRODUCT ===================== */
+CREATE TABLE Product (
+    ProductId INT IDENTITY PRIMARY KEY,
+    CategoryId INT,
+    ProductName NVARCHAR(255) NOT NULL,
+    Price DECIMAL(15,2) NOT NULL,
+    Image NVARCHAR(500),
+    Status NVARCHAR(20) DEFAULT 'Active',
+    Description NVARCHAR(MAX),
+    CreatedAt DATETIME2 DEFAULT GETDATE(),
+    UpdatedAt DATETIME2,
+    CONSTRAINT FK_Product_Category
+        FOREIGN KEY (CategoryId) REFERENCES Category(CategoryId)
+);
+GO
+
+/* ===================== 6. PRODUCT STATS ===================== */
+CREATE TABLE ProductStats (
+    ProductStatsId INT IDENTITY PRIMARY KEY,
+    ProductId INT NOT NULL,
+    Size NVARCHAR(20),
+    Color NVARCHAR(50),
+    TotalInStock INT DEFAULT 0,
+    TotalSold INT DEFAULT 0,
+    UpdatedAt DATETIME2 DEFAULT GETDATE(),
+    CONSTRAINT FK_ProductStats_Product
+        FOREIGN KEY (ProductId) REFERENCES Product(ProductId) ON DELETE CASCADE,
+    CONSTRAINT UQ_ProductVariant UNIQUE (ProductId, Size, Color)
+);
+GO
+
+/* ===================== 7. ORDER ===================== */
+CREATE TABLE [Order] (
+    OrderId INT IDENTITY PRIMARY KEY,
+    CustomerId INT NOT NULL,
+    OrderDate DATETIME2 DEFAULT GETDATE(),
+    TotalAmount DECIMAL(15,2) NOT NULL,
+    OrderStatus NVARCHAR(20) DEFAULT 'Pending'
+        CHECK (OrderStatus IN ('Pending','Confirmed','Shipped','Delivered','Cancelled')),
+    Address NVARCHAR(MAX) NOT NULL,
+    UpdatedAt DATETIME2,
+    CONSTRAINT FK_Order_Customer
+        FOREIGN KEY (CustomerId) REFERENCES Customer(CustomerId)
+);
+GO
+
+/* ===================== 8. ORDER DETAIL ===================== */
+CREATE TABLE OrderDetail (
+    OrderDetailId INT IDENTITY PRIMARY KEY,
+    OrderId INT NOT NULL,
+    ProductStatsId INT NOT NULL,
+    Quantity INT NOT NULL CHECK (Quantity > 0),
+    Price DECIMAL(15,2) NOT NULL,
+    CONSTRAINT FK_OrderDetail_Order
+        FOREIGN KEY (OrderId) REFERENCES [Order](OrderId) ON DELETE CASCADE,
+    CONSTRAINT FK_OrderDetail_ProductStats
+        FOREIGN KEY (ProductStatsId) REFERENCES ProductStats(ProductStatsId)
+);
+GO
+
+/* ===================== 9. PAYMENT ===================== */
+CREATE TABLE Payment (
+    PaymentId INT IDENTITY PRIMARY KEY,
+    OrderId INT NOT NULL,
+    PaymentMethod NVARCHAR(50) DEFAULT 'COD',
+    PaymentStatus NVARCHAR(20)
+        CHECK (PaymentStatus IN ('Pending','Paid','Failed','Refunded'))
+        DEFAULT 'Pending',
+    PaymentDate DATETIME2,
+    UpdatedAt DATETIME2,
+    CONSTRAINT FK_Payment_Order
+        FOREIGN KEY (OrderId) REFERENCES [Order](OrderId) ON DELETE CASCADE
+);
+GO
+
+/* ===================== 10. SHIPPING ===================== */
+CREATE TABLE Shipping (
+    ShippingId INT IDENTITY PRIMARY KEY,
+    OrderId INT NOT NULL,
+    ShippingStatus NVARCHAR(20)
+        CHECK (ShippingStatus IN ('Pending','Shipping','Delivered','Failed'))
+        DEFAULT 'Pending',
+    ShippingDate DATETIME2,
+    DeliveryDate DATETIME2,
+    UpdatedAt DATETIME2,
+    CONSTRAINT FK_Shipping_Order
+        FOREIGN KEY (OrderId) REFERENCES [Order](OrderId) ON DELETE CASCADE
+);
+GO
+
+/* =====================================================
+   TRIGGERS
+   ===================================================== */
+
+-- Giảm tồn kho realtime
+CREATE TRIGGER trg_OrderDetail_Insert
+ON OrderDetail
+AFTER INSERT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF EXISTS (
+        SELECT 1
+        FROM ProductStats ps
+        JOIN inserted i ON ps.ProductStatsId = i.ProductStatsId
+        WHERE ps.TotalInStock < i.Quantity
+    )
+    BEGIN
+        RAISERROR ('Not enough stock', 16, 1);
+        ROLLBACK;
+        RETURN;
+    END;
+
+    UPDATE ps
+    SET 
+        ps.TotalInStock -= i.Quantity,
+        ps.TotalSold += i.Quantity,
+        ps.UpdatedAt = GETDATE()
+    FROM ProductStats ps
+    JOIN inserted i ON ps.ProductStatsId = i.ProductStatsId;
+END;
+GO
+
+-- Cộng điểm khi Delivered
+CREATE TRIGGER trg_Order_Delivered
+ON [Order]
+AFTER UPDATE
+AS
+BEGIN
+    UPDATE c
+    SET c.Point += FLOOR(i.TotalAmount / 10000)
+    FROM Customer c
+    JOIN inserted i ON c.CustomerId = i.CustomerId
+    JOIN deleted d ON i.OrderId = d.OrderId
+    WHERE i.OrderStatus = 'Delivered'
+      AND d.OrderStatus <> 'Delivered';
+END;
+GO
+
+-- Auto Payment + Shipping
+CREATE TRIGGER trg_Order_Insert
+ON [Order]
+AFTER INSERT
+AS
+BEGIN
+    INSERT INTO Payment (OrderId) SELECT OrderId FROM inserted;
+    INSERT INTO Shipping (OrderId) SELECT OrderId FROM inserted;
+END;
+GO
+
+CREATE TRIGGER trg_Order_Cancelled_RestoreStock
+ON [Order]
+AFTER UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Chỉ xử lý khi trạng thái đổi sang Cancelled
+    IF EXISTS (
+        SELECT 1
+        FROM inserted i
+        JOIN deleted d ON i.OrderId = d.OrderId
+        WHERE i.OrderStatus = 'Cancelled'
+          AND d.OrderStatus <> 'Cancelled'
+    )
+    BEGIN
+        UPDATE ps
+        SET 
+            ps.TotalInStock += od.Quantity,
+            ps.TotalSold -= od.Quantity,
+            ps.UpdatedAt = GETDATE()
+        FROM ProductStats ps
+        JOIN OrderDetail od ON ps.ProductStatsId = od.ProductStatsId
+        JOIN inserted i ON od.OrderId = i.OrderId;
+    END
+END;
+GO
+
+CREATE TRIGGER trg_Lock_Order_Delivered
+ON [Order]
+INSTEAD OF UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Nếu đơn cũ đã Delivered thì chặn sửa
+    IF EXISTS (
+        SELECT 1
+        FROM deleted d
+        WHERE d.OrderStatus = 'Delivered'
+    )
+    BEGIN
+        RAISERROR ('Order Delivered cannot be modified', 16, 1);
+        ROLLBACK;
+        RETURN;
+    END
+
+    -- Cho phép update nếu CHƯA Delivered
+    UPDATE o
+    SET
+        o.CustomerId  = i.CustomerId,
+        o.TotalAmount = i.TotalAmount,
+        o.OrderStatus = i.OrderStatus,
+        o.Address     = i.Address,
+        o.UpdatedAt   = GETDATE()
+    FROM [Order] o
+    JOIN inserted i ON o.OrderId = i.OrderId;
+END;
+GO
+/* =====================================================
+   STORED PROCEDURES
+   ===================================================== */
+
+CREATE PROCEDURE sp_CreateOrder
+    @CustomerId INT,
+    @Address NVARCHAR(MAX),
+    @TotalAmount DECIMAL(15,2),
+    @OrderId INT OUTPUT
+AS
+BEGIN
+    INSERT INTO [Order] (CustomerId, Address, TotalAmount)
+    VALUES (@CustomerId, @Address, @TotalAmount);
+
+    SET @OrderId = SCOPE_IDENTITY();
+END;
+GO
+
+CREATE PROCEDURE sp_AddOrderDetail
+    @OrderId INT,
+    @ProductStatsId INT,
+    @Quantity INT,
+    @Price DECIMAL(15,2)
+AS
+BEGIN
+    DECLARE @Stock INT;
+
+    SELECT @Stock = TotalInStock
+    FROM ProductStats
+    WHERE ProductStatsId = @ProductStatsId;
+
+    IF (@Stock >= @Quantity)
+        INSERT INTO OrderDetail (OrderId, ProductStatsId, Quantity, Price)
+        VALUES (@OrderId, @ProductStatsId, @Quantity, @Price);
+    ELSE
+        RAISERROR ('Insufficient stock', 16, 1);
+END;
+GO
+
+CREATE PROCEDURE sp_GetOrderDetails
+    @OrderId INT
+AS
+BEGIN
+    SELECT 
+        o.OrderId, o.OrderDate, o.TotalAmount, o.OrderStatus,
+        c.FullName, c.Phone, o.Address,
+        p.ProductName, ps.Size, ps.Color,
+        od.Quantity, od.Price,
+        od.Quantity * od.Price AS SubTotal
+    FROM [Order] o
+    JOIN Customer c ON o.CustomerId = c.CustomerId
+    JOIN OrderDetail od ON o.OrderId = od.OrderId
+    JOIN ProductStats ps ON od.ProductStatsId = ps.ProductStatsId
+    JOIN Product p ON ps.ProductId = p.ProductId
+    WHERE o.OrderId = @OrderId;
+END;
+GO
+
+/* =====================================================
+   VIEWS
+   ===================================================== */
+
+CREATE VIEW vw_OrderOverview AS
+SELECT 
+    o.OrderId,
+    c.FullName,
+    o.OrderDate,
+    o.TotalAmount,
+    o.OrderStatus,
+    p.PaymentStatus,
+    s.ShippingStatus
+FROM [Order] o
+JOIN Customer c ON o.CustomerId = c.CustomerId
+LEFT JOIN Payment p ON o.OrderId = p.OrderId
+LEFT JOIN Shipping s ON o.OrderId = s.OrderId;
+GO
+
+CREATE VIEW vw_ProductInventory AS
+SELECT 
+    p.ProductId, p.ProductName, c.CategoryName,
+    ps.Size, ps.Color, ps.TotalInStock, ps.TotalSold, p.Price
+FROM Product p
+JOIN Category c ON p.CategoryId = c.CategoryId
+JOIN ProductStats ps ON p.ProductId = ps.ProductId
+WHERE p.Status = 'Active';
+GO
+
+/* =====================================================
+   FUNCTIONS
+   ===================================================== */
+
+CREATE FUNCTION fn_GetRevenue
+(
+    @StartDate DATETIME2,
+    @EndDate DATETIME2
+)
+RETURNS DECIMAL(15,2)
+AS
+BEGIN
+    RETURN (
+        SELECT ISNULL(SUM(TotalAmount),0)
+        FROM [Order]
+        WHERE OrderStatus = 'Delivered'
+        AND OrderDate BETWEEN @StartDate AND @EndDate
+    );
+END;
+GO
+
+CREATE FUNCTION fn_CheckStock (@ProductStatsId INT)
+RETURNS INT
+AS
+BEGIN
+    DECLARE @Stock INT;
+    SELECT @Stock = ISNULL(TotalInStock,0)
+    FROM ProductStats
+    WHERE ProductStatsId = @ProductStatsId;
+    RETURN @Stock;
+END;
+GO
+
+PRINT 'ClothingShop database created successfully (FULL VERSION)';
+GO
