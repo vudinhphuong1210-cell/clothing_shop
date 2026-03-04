@@ -24,11 +24,13 @@ CREATE TABLE Account (
     AccountId INT IDENTITY PRIMARY KEY,
     UserName NVARCHAR(100) NOT NULL UNIQUE,
     Password NVARCHAR(255) NOT NULL,--Varchar
+	Email NVARCHAR(255),
     Role NVARCHAR(20) CHECK (Role IN ('Customer','Employee','Admin')) NOT NULL,
     Status NVARCHAR(20) DEFAULT 'Active',
     CreatedAt DATETIME2 DEFAULT GETDATE()
 );
 GO
+
 
 /* ===================== 2. CUSTOMER ===================== */
 CREATE TABLE Customer (
@@ -36,7 +38,6 @@ CREATE TABLE Customer (
     AccountId INT NOT NULL,
     FullName NVARCHAR(255) NOT NULL,
     Phone NVARCHAR(20),
-    Email NVARCHAR(255),
     Gender NVARCHAR(10),
     Address NVARCHAR(MAX),
     Point INT DEFAULT 0,

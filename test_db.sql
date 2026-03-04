@@ -5,7 +5,7 @@ SET NOCOUNT ON;
 
 PRINT '--- 1. SETTING UP TEST DATA ---';
 -- Create Account & Customer
-INSERT INTO Account (UserName, Password, Role) VALUES ('testuser', '123', 'Customer');
+INSERT INTO Account (UserName, Password, Role, Email) VALUES ('testuser', '123', 'Customer', 'test@example.com');
 DECLARE @AccountId INT = SCOPE_IDENTITY();
 INSERT INTO Customer (AccountId, FullName, Phone) VALUES (@AccountId, 'Test User', '0123456789');
 DECLARE @CustomerId INT = SCOPE_IDENTITY();

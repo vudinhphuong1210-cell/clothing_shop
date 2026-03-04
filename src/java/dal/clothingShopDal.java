@@ -86,16 +86,16 @@ public class clothingShopDal extends DBContext {
         return list;
     }
 
-    //LẤY DANH SÁCH KHÁCH HÀNG
+    // LẤY DANH SÁCH KHÁCH HÀNG
     // Đây là đoạn code mẫu cho phương thức getAllCustomers() trong DAL
-// Phải JOIN Account để lấy đủ thông tin cho JSP dùng ${c.account.status}
+    // Phải JOIN Account để lấy đủ thông tin cho JSP dùng ${c.account.status}
     public List<Customer> getAllCustomers() throws SQLException {
         List<Customer> list = new ArrayList<>();
 
         // ✅ JOIN Account để lấy đủ thông tin
-        String sql = "SELECT c.CustomerId, c.AccountId, c.FullName, c.Phone, c.Email, "
+        String sql = "SELECT c.CustomerId, c.AccountId, c.FullName, c.Phone, "
                 + "       c.Gender, c.Address, c.Point, c.CreatedAt, "
-                + "       a.AccountId, a.UserName, a.Role, a.Status, a.CreatedAt AS AccountCreatedAt "
+                + "       a.AccountId, a.UserName, a.Email, a.Role, a.Status, a.CreatedAt AS AccountCreatedAt "
                 + "FROM Customer c "
                 + "JOIN Account a ON c.AccountId = a.AccountId "
                 + "ORDER BY c.CustomerId";
@@ -105,11 +105,14 @@ public class clothingShopDal extends DBContext {
             while (rs.next()) {
                 // Map Customer
                 Customer c = new Customer();
+                Account a = new Account(); // Initialize Account early
+                c.setAccount(a);
+
                 c.setCustomerId(rs.getInt("CustomerId"));
                 c.setAccountId(rs.getInt("AccountId"));
                 c.setFullName(rs.getString("FullName"));
                 c.setPhone(rs.getString("Phone"));
-                c.setEmail(rs.getString("Email"));
+                c.setEmail(rs.getString("Email")); // This now delegates to Account via c.setAccount()
                 c.setPoint(rs.getInt("Point"));
                 c.setAddress(rs.getString("Address"));
 
@@ -127,10 +130,10 @@ public class clothingShopDal extends DBContext {
                     c.setCreatedAt(createdTs.toLocalDateTime());
                 }
 
-                // ✅ Map Account và gắn vào Customer
-                Account a = new Account();
+                // ✅ Continue Mapping Account
                 a.setAccountId(rs.getInt("AccountId"));
                 a.setUserName(rs.getString("UserName"));
+                // Email is already set above via c.setEmail()
 
                 String roleStr = rs.getString("Role");
                 if (roleStr != null) {
@@ -166,26 +169,25 @@ public class clothingShopDal extends DBContext {
 
     public List<TopProduct> getTop10BestSelling() throws SQLException {
         List<TopProduct> list = new ArrayList<>();
-        String sql =
-            "SELECT TOP 10 "
-          + "    p.ProductId, "
-          + "    p.ProductName, "
-          + "    p.Image, "
-          + "    p.Price, "
-          + "    c.CategoryName, "
-          + "    SUM(od.Quantity)           AS TotalSold, "
-          + "    SUM(od.Quantity * od.Price) AS TotalRevenue "
-          + "FROM Product p "
-          + "JOIN ProductStats  ps ON p.ProductId      = ps.ProductId "
-          + "JOIN OrderDetail   od ON ps.ProductStatsId = od.ProductStatsId "
-          + "JOIN [Order]       o  ON od.OrderId        = o.OrderId "
-          + "LEFT JOIN Category c  ON p.CategoryId      = c.CategoryId "
-          + "WHERE o.OrderStatus = 'Delivered' "
-          + "GROUP BY p.ProductId, p.ProductName, p.Image, p.Price, c.CategoryName "
-          + "ORDER BY TotalSold DESC";
+        String sql = "SELECT TOP 10 "
+                + "    p.ProductId, "
+                + "    p.ProductName, "
+                + "    p.Image, "
+                + "    p.Price, "
+                + "    c.CategoryName, "
+                + "    SUM(od.Quantity)           AS TotalSold, "
+                + "    SUM(od.Quantity * od.Price) AS TotalRevenue "
+                + "FROM Product p "
+                + "JOIN ProductStats  ps ON p.ProductId      = ps.ProductId "
+                + "JOIN OrderDetail   od ON ps.ProductStatsId = od.ProductStatsId "
+                + "JOIN [Order]       o  ON od.OrderId        = o.OrderId "
+                + "LEFT JOIN Category c  ON p.CategoryId      = c.CategoryId "
+                + "WHERE o.OrderStatus = 'Delivered' "
+                + "GROUP BY p.ProductId, p.ProductName, p.Image, p.Price, c.CategoryName "
+                + "ORDER BY TotalSold DESC";
 
         try (PreparedStatement ps = connection.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+                ResultSet rs = ps.executeQuery()) {
             int rank = 1;
             while (rs.next()) {
                 TopProduct tp = new TopProduct();
@@ -202,7 +204,7 @@ public class clothingShopDal extends DBContext {
         }
         return list;
     }
-    
+
     // ===== KPI =====
     public int getTotalOrders() {
         String sql = "SELECT COUNT(*) FROM [Order]";
@@ -221,12 +223,12 @@ public class clothingShopDal extends DBContext {
 
     public double getRevenueThisMonth() {
         String sql = """
-        SELECT ISNULL(SUM(TotalAmount), 0)
-        FROM [Order]
-        WHERE OrderStatus = 'Delivered'
-          AND OrderDate >= ?
-          AND OrderDate <= ?
-    """;
+                    SELECT ISNULL(SUM(TotalAmount), 0)
+                    FROM [Order]
+                    WHERE OrderStatus = 'Delivered'
+                      AND OrderDate >= ?
+                      AND OrderDate <= ?
+                """;
 
         LocalDateTime start = LocalDate.now()
                 .withDayOfMonth(1)
@@ -264,13 +266,13 @@ public class clothingShopDal extends DBContext {
     public Map<String, Double> getRevenueLast7Days() {
         Map<String, Double> map = new LinkedHashMap<>();
         String sql = """
-            SELECT CAST(OrderDate AS DATE) d, SUM(TotalAmount) revenue
-            FROM [Order]
-            WHERE OrderStatus = 'Delivered'
-              AND OrderDate >= DATEADD(DAY, -6, GETDATE())
-            GROUP BY CAST(OrderDate AS DATE)
-            ORDER BY d
-        """;
+                    SELECT CAST(OrderDate AS DATE) d, SUM(TotalAmount) revenue
+                    FROM [Order]
+                    WHERE OrderStatus = 'Delivered'
+                      AND OrderDate >= DATEADD(DAY, -6, GETDATE())
+                    GROUP BY CAST(OrderDate AS DATE)
+                    ORDER BY d
+                """;
         try (PreparedStatement ps = connection.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 map.put(rs.getDate("d").toString(), rs.getDouble("revenue"));
@@ -285,10 +287,10 @@ public class clothingShopDal extends DBContext {
     public List<Map<String, Object>> getLatestOrders(int limit) {
         List<Map<String, Object>> list = new ArrayList<>();
         String sql = """
-            SELECT TOP (?) OrderID, CustomerID, TotalAmount, OrderStatus, OrderDate
-            FROM [Order]
-            ORDER BY OrderDate DESC
-        """;
+                    SELECT TOP (?) OrderID, CustomerID, TotalAmount, OrderStatus, OrderDate
+                    FROM [Order]
+                    ORDER BY OrderDate DESC
+                """;
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, limit);
             ResultSet rs = ps.executeQuery();
@@ -310,10 +312,10 @@ public class clothingShopDal extends DBContext {
     public List<Map<String, Object>> getLowStockProducts(int threshold) {
         List<Map<String, Object>> list = new ArrayList<>();
         String sql = """
-            SELECT ProductName, TotalInStock
-            FROM vw_ProductInventory
-            WHERE TotalInStock < ?
-        """;
+                    SELECT ProductName, TotalInStock
+                    FROM vw_ProductInventory
+                    WHERE TotalInStock < ?
+                """;
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, threshold);
             ResultSet rs = ps.executeQuery();
@@ -341,7 +343,7 @@ public class clothingShopDal extends DBContext {
         return 0;
     }
 
-     public void updateAccountStatus(int accountId, AccountStatus status) throws Exception {
+    public void updateAccountStatus(int accountId, AccountStatus status) throws Exception {
         String sql = "UPDATE Account SET Status = ? WHERE AccountId = ?";
         // Chuyển ACTIVE → "Active", BANNED → "Banned" để khớp với DB
         String statusStr = status.name().charAt(0) + status.name().substring(1).toLowerCase();
@@ -417,22 +419,22 @@ public class clothingShopDal extends DBContext {
 
     // =====================================================
     // 2. XEM TỒN KHO — dùng view vw_ProductInventory
-    //    (Admin cần xem cả Active lẫn Inactive nên query thẳng)
+    // (Admin cần xem cả Active lẫn Inactive nên query thẳng)
     // =====================================================
     public List<ProductStats> getProductInventory() throws SQLException {
         List<ProductStats> list = new ArrayList<>();
 
         String sql = """
-        SELECT ps.ProductStatsId,
-               ps.ProductId,
-               ps.Size,
-               ps.Color,
-               ps.TotalInStock,
-               ps.TotalSold,
-               ps.UpdatedAt
-        FROM ProductStats ps
-        ORDER BY ps.ProductId, ps.Size, ps.Color
-    """;
+                    SELECT ps.ProductStatsId,
+                           ps.ProductId,
+                           ps.Size,
+                           ps.Color,
+                           ps.TotalInStock,
+                           ps.TotalSold,
+                           ps.UpdatedAt
+                    FROM ProductStats ps
+                    ORDER BY ps.ProductId, ps.Size, ps.Color
+                """;
 
         try (PreparedStatement ps = connection.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 
@@ -507,11 +509,11 @@ public class clothingShopDal extends DBContext {
 
         // 1. Câu SQL: thêm 1 product mới
         String sql = """
-        INSERT INTO Product
-            (CategoryId, ProductName, Price, Image, Status, Description)
-        VALUES
-            (?, ?, ?, ?, ?, ?)
-    """;
+                    INSERT INTO Product
+                        (CategoryId, ProductName, Price, Image, Status, Description)
+                    VALUES
+                        (?, ?, ?, ?, ?, ?)
+                """;
 
         // 2. Chuẩn bị statement + lấy ID tự tăng
         try (PreparedStatement ps = connection.prepareStatement(
@@ -578,16 +580,16 @@ public class clothingShopDal extends DBContext {
      */
     public void updateProductStats(ProductStats s) throws SQLException {
         String sql = """
-        UPDATE ProductStats
-        SET Size = ?, Color = ?, TotalInStock = ?, UpdatedAt = GETDATE()
-        WHERE ProductStatsId = ?
-    """;
+                    UPDATE ProductStats
+                    SET Size = ?, Color = ?, TotalInStock = ?, UpdatedAt = GETDATE()
+                    WHERE ProductStatsId = ?
+                """;
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, s.getSize());
             ps.setString(2, s.getColor());
             ps.setInt(3, s.getTotalInStock());
-            ps.setInt(4, s.getProductStatsId());  // ← bắt buộc phải có
+            ps.setInt(4, s.getProductStatsId()); // ← bắt buộc phải có
             ps.executeUpdate();
         }
     }
@@ -608,15 +610,15 @@ public class clothingShopDal extends DBContext {
     }
 
     // =====================================================
-// THÊM MỚI: addStock – cộng dồn tồn kho cho variant đã có
-// Dùng cho action "addStock" (form nhập thêm hàng)
-// =====================================================
+    // THÊM MỚI: addStock – cộng dồn tồn kho cho variant đã có
+    // Dùng cho action "addStock" (form nhập thêm hàng)
+    // =====================================================
     public boolean addStock(int productStatsId, int quantity) throws SQLException {
         String sql = """
-        UPDATE ProductStats
-        SET TotalInStock = TotalInStock + ?, UpdatedAt = GETDATE()
-        WHERE ProductStatsId = ?
-    """;
+                    UPDATE ProductStats
+                    SET TotalInStock = TotalInStock + ?, UpdatedAt = GETDATE()
+                    WHERE ProductStatsId = ?
+                """;
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, quantity);
@@ -625,10 +627,10 @@ public class clothingShopDal extends DBContext {
         }
     }
 
-// =====================================================
-// THÊM MỚI: getProductIdByStatsId – lấy ProductId từ ProductStatsId
-// Dùng để redirect về đúng trang edit sau khi addStock
-// =====================================================
+    // =====================================================
+    // THÊM MỚI: getProductIdByStatsId – lấy ProductId từ ProductStatsId
+    // Dùng để redirect về đúng trang edit sau khi addStock
+    // =====================================================
     public int getProductIdByStatsId(int productStatsId) throws SQLException {
         String sql = "SELECT ProductId FROM ProductStats WHERE ProductStatsId = ?";
 
@@ -642,25 +644,25 @@ public class clothingShopDal extends DBContext {
         }
         return -1;
     }
-//    // =====================================================
-//    // 7. TOP SẢN PHẨM BÁN CHẠY
-//    // =====================================================
+    // // =====================================================
+    // // 7. TOP SẢN PHẨM BÁN CHẠY
+    // // =====================================================
 
     public List<ProductStats> getTopSellingProductStats(int top) throws SQLException {
         List<ProductStats> list = new ArrayList<>();
 
         String sql = """
-        SELECT TOP (?)
-               ps.ProductStatsId,
-               ps.ProductId,
-               ps.Size,
-               ps.Color,
-               ps.TotalInStock,
-               ps.TotalSold,
-               ps.UpdatedAt
-        FROM ProductStats ps
-        ORDER BY ps.TotalSold DESC
-    """;
+                    SELECT TOP (?)
+                           ps.ProductStatsId,
+                           ps.ProductId,
+                           ps.Size,
+                           ps.Color,
+                           ps.TotalInStock,
+                           ps.TotalSold,
+                           ps.UpdatedAt
+                    FROM ProductStats ps
+                    ORDER BY ps.TotalSold DESC
+                """;
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, top);
@@ -750,182 +752,182 @@ public class clothingShopDal extends DBContext {
         return p;
     }
 
-    
-        // =====================================================
-        // LẤY DANH SÁCH EMPLOYEE (JOIN Account)
-        // =====================================================
-        public List<Employee> getAllEmployees() throws SQLException {
-            List<Employee> list = new ArrayList<>();
-            String sql = "SELECT e.EmployeeId, e.AccountId, e.EmployeeName, e.Phone, "
-                    + "       e.Position, e.Status, e.CreatedAt, "
-                    + "       a.UserName, a.Role, a.Status AS AccountStatus "
-                    + "FROM Employee e "
-                    + "JOIN Account a ON e.AccountId = a.AccountId "
-                    + "ORDER BY e.CreatedAt DESC";
+    // =====================================================
+    // LẤY DANH SÁCH EMPLOYEE (JOIN Account)
+    // =====================================================
+    public List<Employee> getAllEmployees() throws SQLException {
+        List<Employee> list = new ArrayList<>();
+        String sql = "SELECT e.EmployeeId, e.AccountId, e.EmployeeName, e.Phone, "
+                + "       e.Position, e.Status, e.CreatedAt, "
+                + "       a.UserName, a.Role, a.Status AS AccountStatus "
+                + "FROM Employee e "
+                + "JOIN Account a ON e.AccountId = a.AccountId "
+                + "ORDER BY e.CreatedAt DESC";
 
-            try (PreparedStatement ps = connection.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    list.add(mapEmployee(rs));
+        try (PreparedStatement ps = connection.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                list.add(mapEmployee(rs));
+            }
+        }
+        return list;
+    }
+
+    // Lấy 1 employee theo ID
+    public Employee getEmployeeById(int employeeId) throws SQLException {
+        String sql = "SELECT e.EmployeeId, e.AccountId, e.EmployeeName, e.Phone, "
+                + "       e.Position, e.Status, e.CreatedAt, "
+                + "       a.UserName, a.Role, a.Status AS AccountStatus "
+                + "FROM Employee e "
+                + "JOIN Account a ON e.AccountId = a.AccountId "
+                + "WHERE e.EmployeeId = ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, employeeId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapEmployee(rs);
                 }
             }
-            return list;
         }
+        return null;
+    }
 
-        // Lấy 1 employee theo ID
-        public Employee getEmployeeById(int employeeId) throws SQLException {
-            String sql = "SELECT e.EmployeeId, e.AccountId, e.EmployeeName, e.Phone, "
-                    + "       e.Position, e.Status, e.CreatedAt, "
-                    + "       a.UserName, a.Role, a.Status AS AccountStatus "
-                    + "FROM Employee e "
-                    + "JOIN Account a ON e.AccountId = a.AccountId "
-                    + "WHERE e.EmployeeId = ?";
-
-            try (PreparedStatement ps = connection.prepareStatement(sql)) {
-                ps.setInt(1, employeeId);
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        return mapEmployee(rs);
-                    }
-                }
+    // Kiểm tra username đã tồn tại chưa
+    public boolean isUserNameExists(String userName) throws SQLException {
+        String sql = "SELECT 1 FROM Account WHERE UserName = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, userName);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
             }
-            return null;
         }
+    }
 
-        // Kiểm tra username đã tồn tại chưa
-        public boolean isUserNameExists(String userName) throws SQLException {
-            String sql = "SELECT 1 FROM Account WHERE UserName = ?";
-            try (PreparedStatement ps = connection.prepareStatement(sql)) {
+    // =====================================================
+    // TẠO TÀI KHOẢN + EMPLOYEE (transaction)
+    // =====================================================
+    public boolean createEmployee(String userName, String password,
+            String employeeName, String phone,
+            String position) throws SQLException {
+        connection.setAutoCommit(false);
+        try {
+            // Bước 1: INSERT Account với Role = 'Employee'
+            String sqlAccount = "INSERT INTO Account (UserName, Password, Role, Status) "
+                    + "VALUES (?, ?, 'Employee', 'Active')";
+            int accountId;
+            try (PreparedStatement ps = connection.prepareStatement(
+                    sqlAccount, Statement.RETURN_GENERATED_KEYS)) {
                 ps.setString(1, userName);
-                try (ResultSet rs = ps.executeQuery()) {
-                    return rs.next();
-                }
-            }
-        }
-
-        // =====================================================
-        // TẠO TÀI KHOẢN + EMPLOYEE (transaction)
-        // =====================================================
-        public boolean createEmployee(String userName, String password,
-                String employeeName, String phone,
-                String position) throws SQLException {
-            connection.setAutoCommit(false);
-            try {
-                // Bước 1: INSERT Account với Role = 'Employee'
-                String sqlAccount = "INSERT INTO Account (UserName, Password, Role, Status) "
-                        + "VALUES (?, ?, 'Employee', 'Active')";
-                int accountId;
-                try (PreparedStatement ps = connection.prepareStatement(
-                        sqlAccount, Statement.RETURN_GENERATED_KEYS)) {
-                    ps.setString(1, userName);
-                    ps.setString(2, password); // nên hash trước khi truyền vào
-                    ps.executeUpdate();
-                    try (ResultSet keys = ps.getGeneratedKeys()) {
-                        if (!keys.next()) {
-                            throw new SQLException("Không lấy được AccountId");
-                        }
-                        accountId = keys.getInt(1);
+                ps.setString(2, password); // nên hash trước khi truyền vào
+                ps.executeUpdate();
+                try (ResultSet keys = ps.getGeneratedKeys()) {
+                    if (!keys.next()) {
+                        throw new SQLException("Không lấy được AccountId");
                     }
+                    accountId = keys.getInt(1);
                 }
+            }
 
-                // Bước 2: INSERT Employee với AccountId vừa tạo
-                String sqlEmployee = "INSERT INTO Employee (AccountId, EmployeeName, Phone, Position, Status) "
-                        + "VALUES (?, ?, ?, ?, 'Active')";
-                try (PreparedStatement ps = connection.prepareStatement(sqlEmployee)) {
-                    ps.setInt(1, accountId);
-                    ps.setString(2, employeeName);
-                    ps.setString(3, phone);
-                    ps.setString(4, position);
-                    ps.executeUpdate();
-                }
+            // Bước 2: INSERT Employee với AccountId vừa tạo
+            String sqlEmployee = "INSERT INTO Employee (AccountId, EmployeeName, Phone, Position, Status) "
+                    + "VALUES (?, ?, ?, ?, 'Active')";
+            try (PreparedStatement ps = connection.prepareStatement(sqlEmployee)) {
+                ps.setInt(1, accountId);
+                ps.setString(2, employeeName);
+                ps.setString(3, phone);
+                ps.setString(4, position);
+                ps.executeUpdate();
+            }
 
-                connection.commit();
-                return true;
+            connection.commit();
+            return true;
 
-            } catch (SQLException e) {
-                connection.rollback();
-                throw e;
-            } finally {
-                connection.setAutoCommit(true);
+        } catch (SQLException e) {
+            connection.rollback();
+            throw e;
+        } finally {
+            connection.setAutoCommit(true);
+        }
+    }
+
+    // =====================================================
+    // SỬA THÔNG TIN EMPLOYEE
+    // =====================================================
+    public boolean updateEmployee(int employeeId, String employeeName,
+            String phone, String position) throws SQLException {
+        String sql = "UPDATE Employee "
+                + "SET EmployeeName = ?, Phone = ?, Position = ? "
+                + "WHERE EmployeeId = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, employeeName);
+            ps.setString(2, phone);
+            ps.setString(3, position);
+            ps.setInt(4, employeeId);
+            return ps.executeUpdate() > 0;
+        }
+    }
+
+    // =====================================================
+    // ĐỔI TRẠNG THÁI ACCOUNT (Active ↔ Inactive)
+    // =====================================================
+    // public boolean updateAccountStatus(int accountId, AccountStatus status)
+    // throws SQLException {
+    // // Chuyển enum → string đúng format DB: ACTIVE → "Active"
+    // String statusStr = status.name().charAt(0)
+    // + status.name().substring(1).toLowerCase();
+    // String sql = "UPDATE Account SET Status = ? WHERE AccountId = ?";
+    // try (PreparedStatement ps = connection.prepareStatement(sql)) {
+    // ps.setString(1, statusStr);
+    // ps.setInt(2, accountId);
+    // return ps.executeUpdate() > 0;
+    // }
+    // }
+
+    // =====================================================
+    // HELPER: map ResultSet → Employee (có Account)
+    // =====================================================
+    private Employee mapEmployee(ResultSet rs) throws SQLException {
+        Employee e = new Employee();
+        e.setEmployeeId(rs.getInt("EmployeeId"));
+        e.setAccountId(rs.getInt("AccountId"));
+        e.setEmployeeName(rs.getString("EmployeeName"));
+        e.setPhone(rs.getString("Phone"));
+        e.setPosition(rs.getString("Position"));
+
+        // Employee.Status
+        String empStatus = rs.getString("Status");
+        if (empStatus != null) {
+            try {
+                e.setStatus(EmployeeStatus.valueOf(empStatus.toUpperCase()));
+            } catch (IllegalArgumentException ex) {
+                e.setStatus(EmployeeStatus.ACTIVE);
             }
         }
 
-        // =====================================================
-        // SỬA THÔNG TIN EMPLOYEE
-        // =====================================================
-        public boolean updateEmployee(int employeeId, String employeeName,
-                String phone, String position) throws SQLException {
-            String sql = "UPDATE Employee "
-                    + "SET EmployeeName = ?, Phone = ?, Position = ? "
-                    + "WHERE EmployeeId = ?";
-            try (PreparedStatement ps = connection.prepareStatement(sql)) {
-                ps.setString(1, employeeName);
-                ps.setString(2, phone);
-                ps.setString(3, position);
-                ps.setInt(4, employeeId);
-                return ps.executeUpdate() > 0;
-            }
+        Timestamp ts = rs.getTimestamp("CreatedAt");
+        if (ts != null) {
+            e.setCreatedAt(ts.toLocalDateTime());
         }
 
-        // =====================================================
-        // ĐỔI TRẠNG THÁI ACCOUNT (Active ↔ Inactive)
-        // =====================================================
-//        public boolean updateAccountStatus(int accountId, AccountStatus status) throws SQLException {
-//            // Chuyển enum → string đúng format DB: ACTIVE → "Active"
-//            String statusStr = status.name().charAt(0)
-//                    + status.name().substring(1).toLowerCase();
-//            String sql = "UPDATE Account SET Status = ? WHERE AccountId = ?";
-//            try (PreparedStatement ps = connection.prepareStatement(sql)) {
-//                ps.setString(1, statusStr);
-//                ps.setInt(2, accountId);
-//                return ps.executeUpdate() > 0;
-//            }
-//        }
+        // Account
+        Account a = new Account();
+        a.setAccountId(rs.getInt("AccountId"));
+        a.setUserName(rs.getString("UserName"));
+        a.setRole(UserRole.EMPLOYEE);
 
-        // =====================================================
-        // HELPER: map ResultSet → Employee (có Account)
-        // =====================================================
-        private Employee mapEmployee(ResultSet rs) throws SQLException {
-            Employee e = new Employee();
-            e.setEmployeeId(rs.getInt("EmployeeId"));
-            e.setAccountId(rs.getInt("AccountId"));
-            e.setEmployeeName(rs.getString("EmployeeName"));
-            e.setPhone(rs.getString("Phone"));
-            e.setPosition(rs.getString("Position"));
-
-            // Employee.Status
-            String empStatus = rs.getString("Status");
-            if (empStatus != null) {
-                try {
-                    e.setStatus(EmployeeStatus.valueOf(empStatus.toUpperCase()));
-                } catch (IllegalArgumentException ex) {
-                    e.setStatus(EmployeeStatus.ACTIVE);
-                }
+        String accStatus = rs.getString("AccountStatus");
+        if (accStatus != null) {
+            try {
+                a.setStatus(AccountStatus.valueOf(accStatus.toUpperCase()));
+            } catch (IllegalArgumentException ex) {
+                a.setStatus(AccountStatus.ACTIVE);
             }
-
-            Timestamp ts = rs.getTimestamp("CreatedAt");
-            if (ts != null) {
-                e.setCreatedAt(ts.toLocalDateTime());
-            }
-
-            // Account
-            Account a = new Account();
-            a.setAccountId(rs.getInt("AccountId"));
-            a.setUserName(rs.getString("UserName"));
-            a.setRole(UserRole.EMPLOYEE);
-
-            String accStatus = rs.getString("AccountStatus");
-            if (accStatus != null) {
-                try {
-                    a.setStatus(AccountStatus.valueOf(accStatus.toUpperCase()));
-                } catch (IllegalArgumentException ex) {
-                    a.setStatus(AccountStatus.ACTIVE);
-                }
-            }
-            e.setAccount(a);
-
-            return e;
         }
-    
+        e.setAccount(a);
+
+        return e;
+    }
+
     // ===============================
     // Function Admin
     // ===============================

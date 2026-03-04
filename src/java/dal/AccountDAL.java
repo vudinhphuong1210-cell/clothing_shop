@@ -32,8 +32,8 @@ public class AccountDAL extends DBContext {
     }
 
     public boolean registerCustomer(Account account, Customer customer) {
-        String sqlAccount = "INSERT INTO Account (UserName, Password, Role, Status, CreatedAt) VALUES (?, ?, ?, ?, ?)";
-        String sqlCustomer = "INSERT INTO Customer (AccountId, FullName, Email, Point, CreatedAt) VALUES (?, ?, ?, ?, ?)";
+        String sqlAccount = "INSERT INTO Account (UserName, Password, Role, Status, CreatedAt, Email) VALUES (?, ?, ?, ?, ?, ?)";
+        String sqlCustomer = "INSERT INTO Customer (AccountId, FullName, Address, Point, CreatedAt) VALUES (?, ?, ?, ?, ?)";
 
         try {
             // Tắt auto-commit để bắt đầu transaction
@@ -51,6 +51,7 @@ public class AccountDAL extends DBContext {
                 // Lấy status từ object account
                 stAcc.setString(4, account.getStatus().name());
                 stAcc.setTimestamp(5, Timestamp.valueOf(account.getCreatedAt()));
+                stAcc.setString(6, account.getEmail());
 
                 int affectedRows = stAcc.executeUpdate();
                 if (affectedRows == 0) {
@@ -73,7 +74,7 @@ public class AccountDAL extends DBContext {
                 try (PreparedStatement stCust = connection.prepareStatement(sqlCustomer)) {
                     stCust.setInt(1, accountId);
                     stCust.setString(2, customer.getFullName());
-                    stCust.setString(3, customer.getEmail());
+                    stCust.setString(3, customer.getAddress());
                     stCust.setInt(4, customer.getPoint());
                     stCust.setTimestamp(5, Timestamp.valueOf(customer.getCreatedAt()));
 
@@ -124,6 +125,7 @@ public class AccountDAL extends DBContext {
                     account.setAccountId(rs.getInt("AccountId"));
                     account.setUserName(rs.getString("UserName"));
                     account.setPassword(rs.getString("Password"));
+                    account.setEmail(rs.getString("Email"));
 
                     // Xử lý Role an toàn
                     String roleStr = rs.getString("Role");
