@@ -239,7 +239,7 @@ public class AdminProductServlet extends HttpServlet {
 
                     // Lấy productId để redirect về đúng trang edit
                     int productId = dao.getProductIdByStatsId(productStatsId);
-                    response.sendRedirect("AdminProduct?action=edit&id=" + productId + "&msg=stocked");
+                    response.sendRedirect("AdminProduct");
                 }
                 
                 // ── 5. TOGGLE STATUS ──
