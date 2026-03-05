@@ -76,18 +76,18 @@ public class ShipperOrderServlet extends HttpServlet {
             throws ServletException, IOException {
         int orderId = Integer.parseInt(request.getParameter("orderId"));
         ShippingDAO shippingDAO = new ShippingDAO();
-        try {
+        try {   
             boolean success = shippingDAO.confirmPayment(orderId);
 
             if (success) {
-                response.sendRedirect("shipper/orders?msg=success");
+                response.sendRedirect(request.getContextPath() + "/shipper/orders?msg=success");
             } else {
-                response.sendRedirect("shipper/orders?msg=failed");
+                response.sendRedirect(request.getContextPath() + "/shipper/orders?msg=failed");
             }
 
         } catch (SQLException e) {
             request.setAttribute("errorMessage", e.getMessage());
-            request.getRequestDispatcher("error.jsp").forward(request, response);
+            request.getRequestDispatcher("/error.jsp").forward(request, response);
         }
     }
 

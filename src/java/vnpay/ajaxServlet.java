@@ -60,17 +60,17 @@ public class ajaxServlet extends HttpServlet {
 
         Order order = orderDAO.getOrderById(orderId);
         if (order == null) {
-            response.sendRedirect("error.jsp");
+            response.sendRedirect(request.getContextPath() + "/payment/error.jsp");
             return;
         }
         
         if (order.getCustomerId() != customer.getCustomerId()) {
-            response.sendRedirect("access-denied.jsp");
+            response.sendRedirect(request.getContextPath() + "/payment/access-denied.jsp");
             return;
         }
 
         if (!order.getOrderStatus().toString().equalsIgnoreCase("PENDING")) {
-            response.sendRedirect("invalidOrder.jsp");
+            response.sendRedirect(request.getContextPath() + "/payment/invalidOrder.jsp");
             return;
         }
 

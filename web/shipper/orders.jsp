@@ -57,22 +57,22 @@
                     <td>${order.orderId}</td>
                     <td>${order.customerId}</td>
                     <td>
-                        <fmt:parseDate value="${order.orderDate}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedDate" type="both" />
-                        <fmt:formatDate value="${parsedDate}" pattern="dd/MM/yyyy HH:mm" /></td>
+                        ${order.orderDate}
+                    </td>  
                     <td>${order.totalAmount}</td>
                     <td>${order.orderStatus}</td>
                     <td>${order.address}</td>
 
                     <td>
-                        <c:if test="${order.orderStatus.name() == 'Shipped'}">
+                        <c:if test="${order.orderStatus.name() == 'SHIPPED'}">
                             <form action="${pageContext.request.contextPath}/shipper/orders" method="post">
                                 <input type="hidden" name="orderId" value="${order.orderId}">
                                 <button type="submit">Đã thu tiền</button>
                             </form>
                         </c:if>
 
-                        <c:if test="${order.orderStatus.name() != 'Shipped'}">
-                            -
+                        <c:if test="${order.orderStatus.name() != 'SHIPPED'}">
+
                         </c:if>
                     </td>
                 </tr>

@@ -73,7 +73,7 @@ public class PaymentServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int orderId = Integer.parseInt(request.getParameter("orderId"));
+        int orderId = 7;//Integer.parseInt(request.getParameter("orderId"));
         String methodRaw = request.getParameter("paymentMethod");
         PaymentMethod method = PaymentMethod.valueOf(methodRaw);
 
@@ -86,14 +86,18 @@ public class PaymentServlet extends HttpServlet {
         paymentDAO.insert(payment);
 
         if (method == PaymentMethod.COD) {
-            handleCOD(request, response);
+            handleCOD(request, response, orderId);
         } else if (method == PaymentMethod.VNPAY) {
             handleVNPAY(request, response, orderId);
         }
     }
 
-    private void handleCOD(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.sendRedirect("thankyou.jsp?msg=Order placed successfully with COD");
+    private void handleCOD(HttpServletRequest request, HttpServletResponse response, int orderId) throws ServletException, IOException {
+        request.setAttribute("transResult", true);
+        request.setAttribute("paymentMethod", "COD");
+        request.setAttribute("orderId", orderId);
+
+        request.getRequestDispatcher("/payment/paymentResult.jsp").forward(request, response);
     }
 
     private void handleVNPAY(HttpServletRequest request, HttpServletResponse response, int orderId) throws IOException {

@@ -8,7 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        <form action="pay" method="post">
+        <form action="${pageContext.request.contextPath}/pay" method="post">
             <input type="hidden" name="orderId" value="${order.id}">
 
             <h4>Chọn phương thức thanh toán:</h4>

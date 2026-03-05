@@ -93,7 +93,7 @@
 
                     <p>
                         <strong>Order Date:</strong>
-                        <fmt:formatDate value="${order.orderDate}" pattern="dd/MM/yyyy HH:mm"/>
+                        <td>${o.orderDate}</td>
                     </p>
 
                     <p>
@@ -130,11 +130,11 @@
                             <td>${d.quantity}</td>
 
                             <td>
-                                <fmt:formatNumber value="${d.unitPrice}" type="currency"/>
+                                <fmt:formatNumber value="${d.price}" type="currency"/>
                             </td>
 
                             <td>
-                                <fmt:formatNumber value="${d.unitPrice * d.quantity}" type="currency"/>
+                                <fmt:formatNumber value="${d.price * d.quantity}" type="currency"/>
                             </td>
                         </tr>
                     </c:forEach>

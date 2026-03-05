@@ -62,10 +62,10 @@ public class MyOrdersServlet extends HttpServlet {
             throws ServletException, IOException {
         OrderDAO orderDAO = new OrderDAO();
         CustomerDAO customerDAO = new CustomerDAO();
-        HttpSession session = request.getSession();
-        Account account = (Account) session.getAttribute("account");
+//        HttpSession session = request.getSession();
+//        Account account = (Account) session.getAttribute("account");
 
-        Customer customer = customerDAO.getCustomerByAccountId(account.getAccountId());
+        Customer customer = customerDAO.getCustomerByAccountId(3);//account.getAccountId());
 
         List<Order> orders = orderDAO.getOrdersByCustomerId(customer.getCustomerId());
 

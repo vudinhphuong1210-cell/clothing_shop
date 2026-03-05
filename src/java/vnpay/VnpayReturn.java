@@ -59,7 +59,7 @@ public class VnpayReturn extends HttpServlet {
         if (!signValue.equals(vnpSecureHash)) {
             request.setAttribute("transResult", false);
             request.setAttribute("message", "Chữ ký không hợp lệ!");
-            request.getRequestDispatcher("paymentResult.jsp").forward(request, response);
+            request.getRequestDispatcher("/payment/paymentResult.jsp").forward(request, response);
             return;
         }
 
@@ -79,7 +79,7 @@ public class VnpayReturn extends HttpServlet {
         if (currentStatus != OrderStatus.PENDING) {
             request.setAttribute("transResult", true);
             request.setAttribute("message", "Đơn hàng đã được xử lý trước đó.");
-            request.getRequestDispatcher("paymentResult.jsp").forward(request, response);
+            request.getRequestDispatcher("/payment/paymentResult.jsp").forward(request, response);
             return;
         }
 
@@ -88,21 +88,19 @@ public class VnpayReturn extends HttpServlet {
         if ("00".equals(responseCode) && "00".equals(transactionStatus)) {
 
             orderDAO.updateOrderStatus(orderId, OrderStatus.CONFIRMED);
-
             paymentDAO.updatePaymentVNPStatus(orderId, PaymentStatus.PAID, transactionNo);
-
             transSuccess = true;
 
         } else {
 
             orderDAO.updateOrderStatus(orderId, OrderStatus.CANCELLED);
-
             paymentDAO.updatePaymentVNPStatus(orderId, PaymentStatus.FAILED, transactionNo);
+            request.setAttribute("message", "Giao dịch thanh toán bị hủy hoặc thất bại.");
         }
 
         request.setAttribute("transResult", transSuccess);
         request.setAttribute("orderId", orderId);
-        request.getRequestDispatcher("thankyou.jsp").forward(request, response);
+        request.getRequestDispatcher("/payment/paymentResult.jsp").forward(request, response);
     }
 
 // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

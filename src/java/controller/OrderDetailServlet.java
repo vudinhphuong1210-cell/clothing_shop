@@ -63,28 +63,28 @@ public class OrderDetailServlet extends HttpServlet {
         OrderDAO orderDAO = new OrderDAO();
         CustomerDAO customerDAO = new CustomerDAO();
 
-        String id = request.getParameter("id");
+        //String id = request.getParameter("id");
 
-        if (id == null || id.isBlank()) {
-            response.sendRedirect("my-orders.jsp");
-            return;
-        }
+//        if (id == null || id.isBlank()) {
+//            response.sendRedirect("/customer/my-orders");
+//            return;
+//        }
 
         int orderId;
         try {
-            orderId = Integer.parseInt(id);
+            orderId = 1;//Integer.parseInt(id);
         } catch (NumberFormatException e) {
-            response.sendRedirect("my-orders.jsp");
+            response.sendRedirect("/customer/my-orders");
             return;
         }
 
-        HttpSession session = request.getSession(false);
-        if (session == null) {
-            response.sendRedirect("login.jsp");
-            return;
-        }
-
-        Customer customer = (Customer) session.getAttribute("customer");
+//        HttpSession session = request.getSession(false);
+//        if (session == null) {
+//            response.sendRedirect("login.jsp");
+//            return;
+//        }
+        CustomerDAO c = new CustomerDAO();
+        Customer customer = c.getCustomerByAccountId(3);//(Customer) session.getAttribute("customer");
 
         if (customer == null) {
             response.sendRedirect("login.jsp");
@@ -95,7 +95,7 @@ public class OrderDetailServlet extends HttpServlet {
             Order order = orderDAO.getOrderByIdAndCustomer(orderId, customer.getCustomerId());
 
             if (order == null) {
-                response.sendRedirect("my-orders");
+                response.sendRedirect("/customer/my-orders");
                 return;
             }
 
@@ -106,7 +106,7 @@ public class OrderDetailServlet extends HttpServlet {
 
             request.getRequestDispatcher("order-detail.jsp").forward(request, response);
 
-        } catch (RuntimeException e) {
+        } catch (RuntimeException e) { 
             response.sendRedirect("my-orders?error=true");
         }
     }

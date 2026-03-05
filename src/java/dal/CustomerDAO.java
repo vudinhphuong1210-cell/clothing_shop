@@ -11,7 +11,7 @@ import model.Gender;
 public class CustomerDAO extends DBContext {
 
     public Customer getCustomerByAccountId(int accountId) {
-        String sql = "SELECT CustomerId, AccountId, FullName, Phone, Email, Gender, Address, Point, CreatedAt FROM Customer WHERE AccountId = ?";
+        String sql = "SELECT CustomerId, AccountId, FullName, Phone, Gender, Address, Point, CreatedAt FROM Customer WHERE AccountId = ?";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, accountId);
@@ -22,7 +22,7 @@ public class CustomerDAO extends DBContext {
                 customer.setAccountId(rs.getInt("AccountId"));
                 customer.setFullName(rs.getString("FullName"));
                 customer.setPhone(rs.getString("Phone"));
-                customer.setEmail(rs.getString("Email"));
+                //customer.setEmail(rs.getString("Email"));
                 String gender = rs.getString("Gender");
                 if (gender != null) {
                     customer.setGender(Gender.valueOf(gender.trim()));

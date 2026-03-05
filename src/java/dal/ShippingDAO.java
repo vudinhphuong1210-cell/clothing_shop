@@ -18,7 +18,7 @@ public class ShippingDAO extends DBContext {
     public List<Order> getOrdersForShipper() {
         List<Order> list = new ArrayList<>();
 
-        String sql = "SELECT * FROM [Order] WHERE OrderStatus = 'Shipped'";
+        String sql = "SELECT * FROM [Order] WHERE OrderStatus = 'SHIPPED'";
 
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -53,14 +53,14 @@ public class ShippingDAO extends DBContext {
     public boolean confirmPayment(int orderId) throws SQLException {
 
         connection.setAutoCommit(false);
-        String updateOrder = "UPDATE Order SET OrderStatus = ? WHERE OrderId = ?";
+        String updateOrder = "UPDATE [Order] SET OrderStatus = ? WHERE OrderId = ?";
         PreparedStatement orderSt = connection.prepareStatement(updateOrder);
-        orderSt.setString(1, "Delivered");
+        orderSt.setString(1, "DELIVERED");
         orderSt.setInt(2, orderId);
 
         int orderRows = orderSt.executeUpdate();
 
-        String updatePayment = "UPDATE Payment SET OrderStatus = ? WHERE OrderId = ?";
+        String updatePayment = "UPDATE Payment SET PaymentStatus = ? WHERE OrderId = ?";
         PreparedStatement paymentSt = connection.prepareStatement(updatePayment);
         paymentSt.setString(1, "PAID");
         paymentSt.setInt(2, orderId);

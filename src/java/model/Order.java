@@ -6,6 +6,7 @@ package model;
 
 import constant.OrderStatus;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Order {
 
@@ -32,8 +33,6 @@ public class Order {
         this.paymentStatus = paymentStatus;
     }
 
-    
-
     public int getOrderId() {
         return orderId;
     }
@@ -42,8 +41,9 @@ public class Order {
         return customerId;
     }
 
-    public LocalDateTime getOrderDate() {
-        return orderDate;
+    public String getOrderDate() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        return orderDate.format(formatter);
     }
 
     public double getTotalAmount() {
