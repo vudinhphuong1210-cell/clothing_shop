@@ -69,7 +69,7 @@ public class ajaxServlet extends HttpServlet {
             return;
         }
 
-        if (!order.getOrderStatus().toString().equalsIgnoreCase("Pending")) {
+        if (!order.getOrderStatus().toString().equalsIgnoreCase("PENDING")) {
             response.sendRedirect("invalidOrder.jsp");
             return;
         }

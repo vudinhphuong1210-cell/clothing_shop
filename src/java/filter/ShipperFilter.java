@@ -16,7 +16,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import model.Employee;
 
-@WebFilter("/shiiper/*")
+@WebFilter("/shiper/*")
 public class ShipperFilter implements Filter {
 
     // The filter configuration object we are associated with.  If
