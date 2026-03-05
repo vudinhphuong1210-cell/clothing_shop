@@ -10,8 +10,6 @@
     <head>
         <title>Login</title>
 
-        <!-- Google reCAPTCHA -->
-        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     </head>
     <body>
 
@@ -31,9 +29,6 @@
             Remember me
             <br><br>
 
-            <!-- reCAPTCHA -->
-            <div class="g-recaptcha" data-sitekey="YOUR_SITE_KEY"></div>
-            <br>
 
             <button type="submit">Login</button>
         </form>
@@ -41,9 +36,14 @@
         <br>
 
         <!-- Login with Google -->
-        <form action="googleLogin" method="get">
-            <button type="submit">Login with Google</button>
+        <br>
+        <form action="${pageContext.request.contextPath}/googleLogin" method="get">
+            <button type="submit">
+                <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" width="20"/>
+                Sign in with Google
+            </button>
         </form>
+
 
         <br>
 

@@ -29,7 +29,9 @@
                 <input type="text" name="keyword" placeholder="Tìm kiếm sản phẩm..." required>
                 <button type="submit">🔍</button>
             </form>
-            <button>👤</button>
+            
+            <a href="${pageContext.request.contextPath}/profile" style="text-decoration: none; font-size: 1.5rem; margin: 0 10px;">👤</a>
+
             <button>🛒</button>
         </section>
     </body>

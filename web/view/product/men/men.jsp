@@ -12,6 +12,7 @@
         <title>JSP Page</title>
     </head>
     <body>
+        <jsp:include page="/view/home/componentHome/header.jsp"/>
         <section>
 
             <!-- Product 1 -->

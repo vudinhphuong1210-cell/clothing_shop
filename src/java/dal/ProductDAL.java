@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import model.Product;
+import model.ProductStats;
+
 
   
 public class ProductDAL extends DBContext {
@@ -76,5 +78,34 @@ public class ProductDAL extends DBContext {
             }
         }
         return products;
+    }
+
+    public List<Product> getProductsWithVariants() throws SQLException {
+        List<Product> products = getAllProducts();
+        for (Product p : products) {
+            p.setVariants(getVariantsByProductId(p.getProductId()));
+        }
+        return products;
+    }
+
+    public List<ProductStats> getVariantsByProductId(int productId) throws SQLException {
+        List<ProductStats> variants = new ArrayList<>();
+        String sql = "SELECT * FROM ProductStats WHERE ProductId = ?";
+        try (PreparedStatement pstm = connection.prepareStatement(sql)) {
+            pstm.setInt(1, productId);
+            try (ResultSet rs = pstm.executeQuery()) {
+                while (rs.next()) {
+                    ProductStats s = new ProductStats();
+                    s.setProductStatsId(rs.getInt("ProductStatsId"));
+                    s.setProductId(rs.getInt("ProductId"));
+                    s.setSize(rs.getString("Size"));
+                    s.setColor(rs.getString("Color"));
+                    s.setTotalInStock(rs.getInt("TotalInStock"));
+                    s.setTotalSold(rs.getInt("TotalSold"));
+                    variants.add(s);
+                }
+            }
+        }
+        return variants;
     }
 }

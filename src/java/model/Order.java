@@ -12,15 +12,14 @@ public class Order {
     private OrderStatus orderStatus;
     private String address;
     private LocalDateTime updatedAt;
+    private constant.PaymentStatus paymentStatus;
 
-    private ProductStats productStats;
-
-    public ProductStats getProductStats() {
-        return productStats;
+    public constant.PaymentStatus getPaymentStatus() {
+        return paymentStatus;
     }
 
-    public void setProductStats(ProductStats productStats) {
-        this.productStats = productStats;
+    public void setPaymentStatus(constant.PaymentStatus paymentStatus) {
+        this.paymentStatus = paymentStatus;
     }
     
     // Constructor mặc định

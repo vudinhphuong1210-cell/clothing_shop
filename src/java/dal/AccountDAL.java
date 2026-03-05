@@ -150,4 +150,27 @@ public class AccountDAL extends DBContext {
         }
         return null;
     }
+
+    public Account getAccountByEmail(String email) {
+        String sql = "SELECT a.* FROM Account a JOIN Customer c ON a.AccountId = c.AccountId WHERE c.Email = ?";
+        try (PreparedStatement st = connection.prepareStatement(sql)) {
+            st.setString(1, email);
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    Account account = new Account();
+                    account.setAccountId(rs.getInt("AccountId"));
+                    account.setUserName(rs.getString("UserName"));
+                    // Role and Status handling consistent with checkLogin
+                    String roleStr = rs.getString("Role");
+                    account.setRole(roleStr != null ? UserRole.valueOf(roleStr.toUpperCase()) : UserRole.CUSTOMER);
+                    String statusStr = rs.getString("Status");
+                    account.setStatus(statusStr != null ? AccountStatus.valueOf(statusStr.trim().toUpperCase()) : AccountStatus.ACTIVE);
+                    return account;
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AccountDAL.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
 }

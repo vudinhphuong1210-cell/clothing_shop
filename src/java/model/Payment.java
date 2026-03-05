@@ -1,24 +1,25 @@
 package model;
 
+import constant.PaymentMethod;
 import constant.PaymentStatus;
 import java.time.LocalDateTime;
 
 public class Payment {
     private Integer paymentId;
     private Integer orderId;
-    private String paymentMethod;
+    private PaymentMethod paymentMethod;
     private PaymentStatus paymentStatus;
     private LocalDateTime paymentDate;
     private LocalDateTime updatedAt;
 
     // Constructor mặc định
     public Payment() {
-        this.paymentMethod = "COD";
+        this.paymentMethod = PaymentMethod.COD;
         this.paymentStatus = PaymentStatus.PENDING;
     }
 
     // Constructor đầy đủ
-    public Payment(Integer paymentId, Integer orderId, String paymentMethod, 
+    public Payment(Integer paymentId, Integer orderId, PaymentMethod paymentMethod, 
                   PaymentStatus paymentStatus, LocalDateTime paymentDate, LocalDateTime updatedAt) {
         this.paymentId = paymentId;
         this.orderId = orderId;
@@ -31,11 +32,11 @@ public class Payment {
     // Constructor không có ID (để insert)
     public Payment(Integer orderId) {
         this.orderId = orderId;
-        this.paymentMethod = "COD";
+        this.paymentMethod = PaymentMethod.COD;
         this.paymentStatus = PaymentStatus.PENDING;
     }
 
-    public Payment(Integer orderId, String paymentMethod) {
+    public Payment(Integer orderId, PaymentMethod paymentMethod) {
         this.orderId = orderId;
         this.paymentMethod = paymentMethod;
         this.paymentStatus = PaymentStatus.PENDING;
@@ -58,11 +59,11 @@ public class Payment {
         this.orderId = orderId;
     }
 
-    public String getPaymentMethod() {
+    public PaymentMethod getPaymentMethod() {
         return paymentMethod;
     }
 
-    public void setPaymentMethod(String paymentMethod) {
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
 

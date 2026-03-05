@@ -4,6 +4,9 @@ import constant.ProductStatus;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.ArrayList;
+
 
 public class Product {
     private Integer productId;
@@ -19,6 +22,8 @@ public class Product {
     // ✅ Thêm field category để JSP dùng ${p.category.categoryName}
     //    và ProductDAO gọi p.setCategory(cat) không bị lỗi compile
     private Category category;
+    private List<ProductStats> variants = new ArrayList<>();
+
 
     // Constructor mặc định
     public Product() {
@@ -90,6 +95,15 @@ public class Product {
     public void setCategory(Category category) {
         this.category = category;
     }
+
+    public List<ProductStats> getVariants() {
+        return variants;
+    }
+
+    public void setVariants(List<ProductStats> variants) {
+        this.variants = variants;
+    }
+
     public String getCreatedAtFormatted() {
     if (createdAt == null) return "";
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");

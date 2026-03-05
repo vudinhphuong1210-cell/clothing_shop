@@ -8,6 +8,7 @@ public class OrderDetail {
     private Integer productStatsId;
     private Integer quantity;
     private BigDecimal price;
+    private String productName;
 
     // Constructor mặc định
     public OrderDetail() {
@@ -15,23 +16,32 @@ public class OrderDetail {
 
     // Constructor đầy đủ
     public OrderDetail(Integer orderDetailId, Integer orderId, Integer productStatsId, 
-                      Integer quantity, BigDecimal price) {
+                      Integer quantity, BigDecimal price, String productName) {
         this.orderDetailId = orderDetailId;
         this.orderId = orderId;
         this.productStatsId = productStatsId;
         this.quantity = quantity;
         this.price = price;
+        this.productName = productName;
     }
 
     // Constructor không có ID (để insert)
-    public OrderDetail(Integer orderId, Integer productStatsId, Integer quantity, BigDecimal price) {
+    public OrderDetail(Integer orderId, Integer productStatsId, Integer quantity, BigDecimal price, String productName) {
         this.orderId = orderId;
         this.productStatsId = productStatsId;
         this.quantity = quantity;
         this.price = price;
+        this.productName = productName;
     }
 
     // Getters và Setters
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
     public Integer getOrderDetailId() {
         return orderDetailId;
     }

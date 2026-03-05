@@ -8,13 +8,18 @@ package controller.interface_web.login;
 import java.io.IOException;
 import java.io.PrintWriter;
 import dal.AccountDAL;
+import dal.clothingShopDal;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.Account;
+import model.Employee;
 import constant.UserRole;
 
 /**
@@ -85,8 +90,27 @@ public class LoginServlet extends HttpServlet {
             UserRole role = account.getRole();
             if (role == UserRole.ADMIN) {
                 response.sendRedirect(request.getContextPath() + "/AdminDashboard");
+            } else if (role == UserRole.EMPLOYEE) {
+                try {
+                    clothingShopDal empDal = new clothingShopDal();
+                    Employee employee = empDal.getEmployeeByAccountId(account.getAccountId());
+                    
+                    if (employee == null) {
+                        // Fallback: Create a transient Employee object if no profile exists yet
+                        employee = new Employee();
+                        employee.setAccountId(account.getAccountId());
+                        employee.setEmployeeName(account.getUserName());
+                        employee.setPosition("SHIPPER"); 
+                    }
+                    
+                    session.setAttribute("user", employee);
+                    response.sendRedirect(request.getContextPath() + "/shipper/orders");
+                } catch (SQLException ex) {
+                    Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                    response.sendRedirect(request.getContextPath() + "/home");
+                }
             } else {
-                // For CUSTOMER and EMPLOYEE (per user's note about employee code not merged yet)
+                // For CUSTOMER
                 response.sendRedirect(request.getContextPath() + "/home");
             }
         } else {

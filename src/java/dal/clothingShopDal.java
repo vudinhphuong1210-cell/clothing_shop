@@ -771,6 +771,25 @@ public class clothingShopDal extends DBContext {
             return list;
         }
 
+        public Employee getEmployeeByAccountId(int accountId) throws SQLException {
+            String sql = "SELECT e.EmployeeId, e.AccountId, e.EmployeeName, e.Phone, "
+                    + "       e.Position, e.Status, e.CreatedAt, "
+                    + "       a.UserName, a.Role, a.Status AS AccountStatus "
+                    + "FROM Employee e "
+                    + "JOIN Account a ON e.AccountId = a.AccountId "
+                    + "WHERE e.AccountId = ?";
+
+            try (PreparedStatement ps = connection.prepareStatement(sql)) {
+                ps.setInt(1, accountId);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return mapEmployee(rs);
+                    }
+                }
+            }
+            return null;
+        }
+
         // Lấy 1 employee theo ID
         public Employee getEmployeeById(int employeeId) throws SQLException {
             String sql = "SELECT e.EmployeeId, e.AccountId, e.EmployeeName, e.Phone, "
