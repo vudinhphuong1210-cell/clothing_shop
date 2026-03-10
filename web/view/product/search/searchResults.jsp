@@ -34,9 +34,25 @@
                 <div class="product-list">
                     <c:forEach items="${products}" var="p">
                         <div class="product-item">
-                            <img src="${pageContext.request.contextPath}/${p.image}" alt="${p.productName}">
-                            <h3>${p.productName}</h3>
-                            <p><strong>${p.price} VND</strong></p>
+                            <a href="${pageContext.request.contextPath}/product-detail?id=${p.productId}" style="text-decoration:none; color:inherit;">
+                                <img src="${pageContext.request.contextPath}/${p.image}" alt="${p.productName}">
+                                <h3>${p.productName}</h3>
+                                <p><strong>${p.price} VND</strong></p>
+                            </a>
+                            <div style="margin-top: 15px; display: flex; gap: 10px; justify-content: center;">
+                                <form action="${pageContext.request.contextPath}/cart" method="GET" style="margin:0;">
+                                    <input type="hidden" name="id" value="${p.productId}">
+                                    <input type="hidden" name="action" value="add">
+                                    <input type="hidden" name="quantity" value="1">
+                                    <button type="submit" style="padding: 8px 12px; background-color: #f8b400; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Giỏ hàng</button>
+                                </form>
+                                <form action="${pageContext.request.contextPath}/cart" method="GET" style="margin:0;">
+                                    <input type="hidden" name="id" value="${p.productId}">
+                                    <input type="hidden" name="action" value="buyNow">
+                                    <input type="hidden" name="quantity" value="1">
+                                    <button type="submit" style="padding: 8px 12px; background-color: #e44d26; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Mua ngay</button>
+                                </form>
+                            </div>
                         </div>
                     </c:forEach>
                 </div>

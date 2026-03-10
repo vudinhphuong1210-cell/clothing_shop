@@ -5,6 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -32,7 +33,12 @@
             
             <a href="${pageContext.request.contextPath}/profile" style="text-decoration: none; font-size: 1.5rem; margin: 0 10px;">👤</a>
 
-            <button>🛒</button>
+            <a href="${pageContext.request.contextPath}/cart" style="text-decoration: none; font-size: 1.5rem; margin: 0 10px; position: relative;">
+                🛒
+                <c:if test="${not empty sessionScope.cartSize && sessionScope.cartSize > 0}">
+                    <span style="background-color: red; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.8rem; position: absolute; top: -5px; right: -10px;">${sessionScope.cartSize}</span>
+                </c:if>
+            </a>
         </section>
     </body>
 </html>

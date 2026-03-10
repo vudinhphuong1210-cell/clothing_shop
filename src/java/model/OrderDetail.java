@@ -82,6 +82,25 @@ public class OrderDetail {
         this.price = price;
     }
 
+    // Transient fields for UI Display
+    private String productImage;
+    private String color;
+    private String size;
+    private Integer productId;
+
+    // Getters and Setters cho Transient Fields
+    public String getProductImage() { return productImage; }
+    public void setProductImage(String productImage) { this.productImage = productImage; }
+
+    public String getColor() { return color; }
+    public void setColor(String color) { this.color = color; }
+
+    public String getSize() { return size; }
+    public void setSize(String size) { this.size = size; }
+    
+    public Integer getProductId() { return productId; }
+    public void setProductId(Integer productId) { this.productId = productId; }
+
     // Method tính subtotal
     public BigDecimal getSubTotal() {
         if (price != null && quantity != null) {
@@ -89,6 +108,4 @@ public class OrderDetail {
         }
         return BigDecimal.ZERO;
     }
-
-   
 }

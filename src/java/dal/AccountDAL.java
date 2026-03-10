@@ -48,8 +48,9 @@ public class AccountDAL extends DBContext {
                 String roleName = account.getRole().name();
                 stAcc.setString(3, roleName.substring(0, 1).toUpperCase() + roleName.substring(1).toLowerCase());
 
-                // Lấy status từ object account
-                stAcc.setString(4, account.getStatus().name());
+                // Lấy status từ object account, chuẩn hóa định dạng Capitalized để khớp DB (Active, Inactive...)
+                String statusName = account.getStatus().name();
+                stAcc.setString(4, statusName.substring(0, 1).toUpperCase() + statusName.substring(1).toLowerCase());
                 stAcc.setTimestamp(5, Timestamp.valueOf(account.getCreatedAt()));
 
                 int affectedRows = stAcc.executeUpdate();
@@ -151,6 +152,46 @@ public class AccountDAL extends DBContext {
         return null;
     }
 
+    public Account getAccountByUserName(String username) {
+        String sql = "SELECT * FROM Account WHERE UserName = ?";
+        try (PreparedStatement st = connection.prepareStatement(sql)) {
+            st.setString(1, username);
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    Account account = new Account();
+                    account.setAccountId(rs.getInt("AccountId"));
+                    account.setUserName(rs.getString("UserName"));
+                    
+                    String roleStr = rs.getString("Role");
+                    if (roleStr != null) {
+                        try {
+                            account.setRole(UserRole.valueOf(roleStr.trim().toUpperCase()));
+                        } catch (IllegalArgumentException e) {
+                            account.setRole(UserRole.CUSTOMER);
+                        }
+                    } else {
+                        account.setRole(UserRole.CUSTOMER);
+                    }
+
+                    String statusStr = rs.getString("Status");
+                    if (statusStr != null) {
+                        try {
+                            account.setStatus(AccountStatus.valueOf(statusStr.trim().toUpperCase()));
+                        } catch (IllegalArgumentException e) {
+                            account.setStatus(AccountStatus.ACTIVE);
+                        }
+                    } else {
+                        account.setStatus(AccountStatus.ACTIVE);
+                    }
+                    return account;
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AccountDAL.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
     public Account getAccountByEmail(String email) {
         String sql = "SELECT a.* FROM Account a JOIN Customer c ON a.AccountId = c.AccountId WHERE c.Email = ?";
         try (PreparedStatement st = connection.prepareStatement(sql)) {
@@ -160,11 +201,28 @@ public class AccountDAL extends DBContext {
                     Account account = new Account();
                     account.setAccountId(rs.getInt("AccountId"));
                     account.setUserName(rs.getString("UserName"));
-                    // Role and Status handling consistent with checkLogin
+                    
                     String roleStr = rs.getString("Role");
-                    account.setRole(roleStr != null ? UserRole.valueOf(roleStr.toUpperCase()) : UserRole.CUSTOMER);
+                    if (roleStr != null) {
+                        try {
+                            account.setRole(UserRole.valueOf(roleStr.trim().toUpperCase()));
+                        } catch (IllegalArgumentException e) {
+                            account.setRole(UserRole.CUSTOMER);
+                        }
+                    } else {
+                        account.setRole(UserRole.CUSTOMER);
+                    }
+
                     String statusStr = rs.getString("Status");
-                    account.setStatus(statusStr != null ? AccountStatus.valueOf(statusStr.trim().toUpperCase()) : AccountStatus.ACTIVE);
+                    if (statusStr != null) {
+                        try {
+                            account.setStatus(AccountStatus.valueOf(statusStr.trim().toUpperCase()));
+                        } catch (IllegalArgumentException e) {
+                            account.setStatus(AccountStatus.ACTIVE);
+                        }
+                    } else {
+                        account.setStatus(AccountStatus.ACTIVE);
+                    }
                     return account;
                 }
             }

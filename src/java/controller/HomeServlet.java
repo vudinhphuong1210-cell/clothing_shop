@@ -21,10 +21,12 @@ public class HomeServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+        String sort = request.getParameter("sort");
         ProductDAL dao = new ProductDAL();
         try {
-            List<Product> list = dao.getProductsWithVariants();
+            List<Product> list = dao.getProductsWithVariants(sort);
             request.setAttribute("products", list);
+            request.setAttribute("currentSort", sort);
         } catch (SQLException ex) {
             Logger.getLogger(HomeServlet.class.getName()).log(Level.SEVERE, null, ex);
         }

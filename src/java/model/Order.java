@@ -106,5 +106,54 @@ public class Order {
         this.updatedAt = updatedAt;
     }
 
+    // --- CART LOGIC (Session) ---
+    private java.util.List<OrderDetail> orderDetails = new java.util.ArrayList<>();
+
+    public java.util.List<OrderDetail> getOrderDetails() {
+        return orderDetails;
+    }
+
+    public void setOrderDetails(java.util.List<OrderDetail> orderDetails) {
+        this.orderDetails = orderDetails;
+    }
     
+    public void addOrderDetail(OrderDetail detail) {
+        // Nếu đã có ProductStats này trong giỏ, chỉ cần tăng quantity
+        for (OrderDetail od : orderDetails) {
+            if (od.getProductStatsId().equals(detail.getProductStatsId())) {
+                od.setQuantity(od.getQuantity() + detail.getQuantity());
+                calculateTotalAmount();
+                return;
+            }
+        }
+        orderDetails.add(detail);
+        calculateTotalAmount();
+    }
+
+    public void removeOrderDetail(Integer productStatsId) {
+        orderDetails.removeIf(od -> od.getProductStatsId().equals(productStatsId));
+        calculateTotalAmount();
+    }
+
+    public void updateQuantity(Integer productStatsId, int newQuantity) {
+        for (OrderDetail od : orderDetails) {
+            if (od.getProductStatsId().equals(productStatsId)) {
+                if(newQuantity <= 0) {
+                     orderDetails.remove(od);
+                } else {
+                     od.setQuantity(newQuantity);
+                }
+                calculateTotalAmount();
+                return;
+            }
+        }
+    }
+
+    public void calculateTotalAmount() {
+        BigDecimal total = BigDecimal.ZERO;
+        for (OrderDetail od : orderDetails) {
+            total = total.add(od.getSubTotal());
+        }
+        this.totalAmount = total;
+    }
 }
