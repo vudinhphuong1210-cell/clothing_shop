@@ -93,7 +93,7 @@
 
                 <div style="overflow: hidden;">
                     <a href="${pageContext.request.contextPath}/home" class="btn btn-continue">Tiếp tục mua sắm</a>
-                    <a href="${pageContext.request.contextPath}/payment.jsp" class="btn btn-checkout" style="float: right;">Thanh toán ngay</a>
+                    <a href="${pageContext.request.contextPath}/pay" class="btn btn-checkout" style="float: right;">Thanh toán ngay</a>
                 </div>
             </c:if>
         </div>

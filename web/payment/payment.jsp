@@ -9,7 +9,7 @@
     </head>
     <body>
         <form action="pay" method="post">
-            <input type="hidden" name="orderId" value="${order.id}">
+            <input type="hidden" name="orderId" value="${order.orderId}"/>
 
             <h4>Chọn phương thức thanh toán:</h4>
             <div class="form-check">
