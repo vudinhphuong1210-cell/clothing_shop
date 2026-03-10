@@ -73,7 +73,7 @@ public class PaymentServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int orderId = 7;//Integer.parseInt(request.getParameter("orderId"));
+        int orderId = 9;//Integer.parseInt(request.getParameter("orderId"));
         String methodRaw = request.getParameter("paymentMethod");
         PaymentMethod method = PaymentMethod.valueOf(methodRaw);
 
