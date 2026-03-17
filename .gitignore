@@ -1,3 +1,25 @@
 /nbproject/private/
 /build/
 /dist/
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+
+# NetBeans
+nbproject/private/
+nbproject/project.properties
+nbproject/genfiles.properties
+nbproject/ant-deploy.xml
+
+# Logs and temporary files
+*.log
+compile_errors.txt
+out.txt
+test_out.txt
+
+# OS-specific files
+Thumbs.db
+.DS_Store
