@@ -10,6 +10,7 @@ import model.Order;
 import java.sql.*;
 import model.OrderDetail;
 import constant.OrderStatus;
+import java.time.LocalDateTime;
 
 public class OrderDAO extends DBContext {
 
@@ -190,5 +191,31 @@ public class OrderDAO extends DBContext {
         } catch (SQLException e) {
             throw new RuntimeException("Lỗi update order status", e);
         }
+    }
+
+    public List<Order> getAllOrders() {
+        List<Order> list = new ArrayList<>();
+        String sql = "SELECT * FROM [Order] ORDER BY OrderDate DESC";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+
+                Order o = new Order();
+
+                o.setOrderId(rs.getInt("OrderId"));
+                o.setCustomerId(rs.getInt("CustomerId"));           
+                o.setOrderDate(rs.getObject("OrderDate", LocalDateTime.class));
+                o.setTotalAmount(rs.getDouble("TotalAmount"));
+                o.setOrderStatus(OrderStatus.valueOf(rs.getString("OrderStatus")));
+                o.setAddress(rs.getString("Address"));
+                list.add(o);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
     }
 }
